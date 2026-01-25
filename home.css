@@ -536,6 +536,23 @@ footer {
   color: #a99d94;
 }
 
+@media screen and (max-width: 768px) {
+  .about-container {
+    flex-direction: column;  /* תמונה מעל טקסט */
+    text-align: center;      /* מרכז את הטקסט */
+    gap: 25px;
+  }
+
+  .about-logo {
+    width: 100%;             /* תמונה לכל רוחב */
+    max-width: 100%;
+  }
+
+  .about-text {
+    width: 100%;
+  }
+}
+
 
 
 /* Top cart icon */
@@ -1453,3 +1470,4 @@ body, section {
   font-size: 12px;
   opacity: 0.6;
 }
+
