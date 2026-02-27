@@ -774,3 +774,31 @@ if (hamburger && mobileNav) {
     });
   });
 }
+
+
+
+
+document.addEventListener("DOMContentLoaded", function() {
+  const overlay = document.getElementById("ageOverlay");
+
+  // אם אין overlay בדף הזה, אל תעשה כלום
+  if (!overlay) return;
+
+  const confirmBtn = document.getElementById("confirmAge");
+  const denyBtn = document.getElementById("denyAge");
+
+  // אם כבר אישר
+  if (localStorage.getItem("ageVerified") === "true") {
+    overlay.style.display = "none";
+    return;
+  }
+
+  confirmBtn.addEventListener("click", function() {
+    localStorage.setItem("ageVerified", "true");
+    overlay.style.display = "none";
+  });
+
+  denyBtn.addEventListener("click", function() {
+    window.location.href = "https://www.google.com";
+  });
+});
