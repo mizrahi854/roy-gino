@@ -824,3 +824,11 @@ function validateCoupon(code) {
     const found = coupons.find(c => c.code === code.toUpperCase());
     return found ? found.discount : 0;
 }
+
+
+
+window.addEventListener('load', function() {
+    // מוחק את העגלה בלבד ברגע שהדף נטען
+    localStorage.removeItem('ginoCart');
+    console.log("העגלה אופסה בהצלחה בכניסה לאתר");
+});
