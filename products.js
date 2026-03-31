@@ -828,7 +828,15 @@ function validateCoupon(code) {
 
 
 window.addEventListener('load', function() {
-    // מוחק את העגלה בלבד ברגע שהדף נטען
-    localStorage.removeItem('ginoCart');
-    console.log("העגלה אופסה בהצלחה בכניסה לאתר");
+    // בודק אם המשתמש כרגע התחיל ביקור חדש באתר
+    if (!sessionStorage.getItem('isGinoSessionActive')) {
+        
+        // אם זה ביקור חדש, מוחקים את העגלה מהביקור הקודם
+        localStorage.removeItem('ginoCart');
+        
+        // מסמנים שהביקור התחיל, כדי שרענון דף לא ימחק את העגלה שוב
+        sessionStorage.setItem('isGinoSessionActive', 'true');
+        
+        console.log("עגלת GINO VINO אופסה לרגל כניסה חדשה");
+    }
 });
