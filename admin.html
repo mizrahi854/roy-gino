@@ -307,6 +307,15 @@
         <button class="action-btn btn-red" onclick="resetToEmbedded()"><i class="fas fa-redo"></i> אפס לברירת מחדל</button>
       </div>
 
+
+
+
+<button class="action-btn btn-green" onclick="setAllProductsActive()" style="background-color: #27ae60;">
+  <i class="fas fa-check-double"></i> הכל במלאי
+</button>
+
+
+
       <!-- Products count -->
       <p style="color:var(--text3);font-size:0.9rem;margin-bottom:12px" id="productCount"></p>
 
@@ -387,24 +396,30 @@
           </p>
         </div>
 
-      <div class="admin-section">
-    <h3>ניהול קופונים</h3>
+ <div class="admin-section" style="background: var(--bg3); padding: 20px; border-radius: 10px; border: 1px solid var(--border); margin-bottom: 20px;">
+    <h3 style="color:var(--gold); margin-bottom:15px;">ניהול קופונים</h3>
 
-    <input type="text" id="couponCode" placeholder="קוד קופון (למשל GINO10)">
-    
-    <input type="number" id="couponDiscount" placeholder="אחוז הנחה (למשל 10)">
+    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
+        <input type="text" id="couponCode" placeholder="קוד קופון (למשל GINO10)" class="inline-input" style="width:100%; height:40px;">
+        <input type="number" id="couponDiscount" placeholder="אחוז הנחה" class="inline-input" style="width:100%; height:40px;">
+    </div>
 
-    <label style="display:flex;align-items:center;gap:8px;margin:10px 0;color:var(--text2)">
+    <div style="margin-top: 10px;">
+        <label style="display:block; font-size:0.8rem; color:var(--text2); margin-bottom:4px;">תאריך תפוגה (אופציונלי):</label>
+        <input type="date" id="couponExpiry" class="inline-input" style="width:100%; height:40px;">
+    </div>
+
+    <label style="display:flex; align-items:center; gap:8px; margin:15px 0; color:var(--text2)">
       <input type="checkbox" id="couponFreeShipping">
       משלוח חינם בקופון
     </label>
 
-    <button class="btn-gold" onclick="addNewCoupon()" style="padding:10px 16px;border:none;border-radius:8px">
-      צור קופון
+    <button class="btn-gold" onclick="addNewCoupon()" style="padding:10px 20px; border:none; border-radius:8px; width:100%;">
+      צור קופון חדש
     </button>
 
     <div id="couponsList" style="margin-top:15px"></div>
-  </div>
+</div>
 
 
 
@@ -816,18 +831,35 @@
     renderCoupons();
   }
 
+function renderCoupons() {
+  const box = document.getElementById('couponsList');
+  const coupons = JSON.parse(localStorage.getItem('ginoCoupons') || '[]');
 
-  function renderCoupons() {
-    const box = document.getElementById('couponsList');
-    const coupons = JSON.parse(localStorage.getItem('ginoCoupons') || '[]');
-
-    box.innerHTML = coupons.map(c => `
-      <div style="background:#1a1a1a;padding:10px;border-radius:8px;margin-top:8px;border:1px solid rgba(212,175,55,0.2)">
-        <b>${c.code}</b> | ${c.discount}% הנחה
-        ${c.freeShipping ? ' | 🚚 משלוח חינם' : ''}
-      </div>
-    `).join('');
+  if (coupons.length === 0) {
+    box.innerHTML = '<p style="color:var(--text3); font-size:0.9rem;">אין קופונים פעילים</p>';
+    return;
   }
+
+  box.innerHTML = coupons.map((c, i) => {
+    // עיצוב התאריך לתצוגה
+    const dateDisplay = c.expiryDate ? `<br><span style="font-size:0.8rem; color:var(--text3)">📅 בתוקף עד: ${c.expiryDate}</span>` : '<br><span style="font-size:0.8rem; color:var(--text3)">📅 ללא הגבלת זמן</span>';
+    
+    return `
+      <div style="background:#1a1a1a; padding:12px; border-radius:8px; margin-top:8px; border:1px solid rgba(212,175,55,0.2); display:flex; justify-content:space-between; align-items:center;">
+        <div>
+          <b style="color:var(--gold)">${c.code}</b> | ${c.discount}% הנחה
+          ${c.freeShipping ? ' | 🚚 משלוח חינם' : ''}
+          ${dateDisplay}
+        </div>
+        <button onclick="deleteCoupon(${i})"
+          style="background:rgba(192,57,43,0.2); color:var(--red); border:1px solid var(--red); padding:5px 10px; border-radius:6px; cursor:pointer; font-size:0.8rem;">
+          מחיקה
+        </button>
+      </div>
+    `;
+  }).join('');
+}
+
 
   function addNewCoupon() {
   const code = document.getElementById('couponCode').value.trim();
@@ -883,6 +915,61 @@ function deleteCoupon(index) {
 window.addEventListener('DOMContentLoaded', () => {
   renderCoupons();
 });
+
+
+function addNewCoupon() {
+  const code = document.getElementById('couponCode').value.trim().toUpperCase();
+  const discount = parseFloat(document.getElementById('couponDiscount').value) || 0;
+  const expiry = document.getElementById('couponExpiry').value; // שורת התאריך החדשה
+  const freeShipping = document.getElementById('couponFreeShipping').checked;
+
+  if (!code) return alert('חסר קוד קופון');
+
+  const coupons = JSON.parse(localStorage.getItem('ginoCoupons') || '[]');
+
+  if (coupons.find(c => c.code === code)) {
+    return alert('קופון כבר קיים');
+  }
+
+  // שומרים גם את ה-expiryDate
+  coupons.push({ 
+    code, 
+    discount, 
+    freeShipping, 
+    expiryDate: expiry 
+  });
+
+  localStorage.setItem('ginoCoupons', JSON.stringify(coupons));
+
+  // ניקוי הטופס
+  document.getElementById('couponCode').value = '';
+  document.getElementById('couponDiscount').value = '';
+  document.getElementById('couponExpiry').value = '';
+  document.getElementById('couponFreeShipping').checked = false;
+
+  renderCoupons();
+  showToast('קופון נוצר בהצלחה');
+}
+
+function setAllProductsActive() {
+    // 1. בקשת אישור מהמשתמש כדי למנוע טעויות
+    if (!confirm('האם להפוך את כל המוצרים באתר לפעילים במלאי?')) return;
+
+    // 2. משיכת כל המוצרים מהזיכרון
+    const prods = getProducts();
+
+    // 3. עדכון כל מוצר למצב פעיל
+    prods.forEach(p => {
+        p.isActive = true;
+    });
+
+    // 4. שמירה חזרה ל-localStorage
+    saveProducts(prods);
+
+    // 5. רענון הטבלה והצגת הודעת אישור
+    renderProductsTable();
+    showToast('כל המוצרים עודכנו כפעילים במלאי!');
+}
 
   </script>
   </body>
