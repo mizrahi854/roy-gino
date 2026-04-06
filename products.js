@@ -842,18 +842,3 @@ window.addEventListener('load', function() {
 });
 
 
-function getProducts() {
-    const saved = localStorage.getItem('ginoProducts');
-    if (saved) {
-        return JSON.parse(saved);
-    }
-    // אם אין מידע שמור, תחזיר את הרשימה המקורית (המערך הגדול שלך)
-    return [
-        { name: "יין אדום", price: 100, ... },
-        // ... כל שאר 450 המוצרים
-    ];
-}
-
-function saveProducts(prods) {
-    localStorage.setItem('ginoProducts', JSON.stringify(prods));
-}
