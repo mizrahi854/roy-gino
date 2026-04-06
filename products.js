@@ -1,12 +1,6 @@
 /**
- * products.js - GINO VINO Shared Product & Cart Module
- * Manages product data, cart state, and settings via localStorage.
- *
- * Keys used in localStorage:
- *   ginoProducts  - product array (admin can override embedded data)
- *   ginoCart      - cart array [{name, price, qty, discountPrice}]
- *   ginoSettings  - store settings object
- *   ginoOrders    - orders array
+ * products.js - GINO VINO Shared Product & Cart Module (Cloud Connected)
+ * Manages product data, cart state, and settings via localStorage & Firebase.
  */
 
 // ============================================================
@@ -347,8 +341,7 @@ const EMBEDDED_PRODUCTS = [
 {"alcoholPercent":40,"price":89.00,"discountPrice":0,"cost":75.60,"isActive":false,"name":"קפטן מורגן בלאק","category":"רום"},
 {"alcoholPercent":40,"price":99.00,"discountPrice":0,"cost":82.70,"isActive":false,"name":"קפטן מורגן ספייס 750 מל","category":"רום"},
 {"alcoholPercent":40,"price":129.00,"discountPrice":0,"cost":107.50,"isActive":false,"name":"קרקאן","category":"רום"},
-{"alcoholPercent":40,"price":99.00,"discountPrice":0,"cost":83.00,"isActive":false,"name":"קשאסה","category":"רום"}
-,
+{"alcoholPercent":40,"price":99.00,"discountPrice":0,"cost":83.00,"isActive":false,"name":"קשאסה","category":"רום"},
 {"alcoholPercent":38,"price":145.00,"discountPrice":0,"cost":105.00,"isActive":false,"name":"רוברטו קוואלי אבטיח", "category":"וודקה"},
 {"alcoholPercent":38,"price":145.00,"discountPrice":0,"cost":105.00,"isActive":false,"name":"רוברטו קוואלי אננס", "category":"וודקה"},
 {"alcoholPercent":38,"price":145.00,"discountPrice":105,"cost":105.00,"isActive":true,"name":"רוברטו קוואלי מלון", "category":"וודקה"},
@@ -563,13 +556,10 @@ const EMBEDDED_PRODUCTS = [
 {"alcoholPercent":37,"price":105.00,"discountPrice":0,"cost":76.70,"isActive":false,"name":"יתיר - הר עמשא רוזה", "category":"יין"}
 ];
 
-// ============================================================
-// PRODUCT FUNCTIONS
-// ============================================================
 
-/**
- * Returns product array from localStorage (admin edits) or embedded fallback.
- */
+// ============================================================
+// PRODUCT FUNCTIONS (מחובר לענן)
+// ============================================================
 function getProducts() {
   try {
     const stored = localStorage.getItem('ginoProducts');
@@ -578,43 +568,56 @@ function getProducts() {
   return EMBEDDED_PRODUCTS.slice();
 }
 
-/**
- * Saves product array to localStorage.
- * @param {Array} arr
- */
 function saveProducts(arr) {
+  // שמירה בזיכרון המקומי
   localStorage.setItem('ginoProducts', JSON.stringify(arr));
+  
+  // שמירה לענן של פיירבייס שכולם יראו
+  if (typeof db !== 'undefined') {
+    db.collection("catalog").doc("main").set({ items: arr })
+      .then(() => console.log("🔥 המוצרים סונכרנו בהצלחה לענן!"))
+      .catch(err => console.error("שגיאה בשמירה לענן:", err));
+  }
 }
 
-// ============================================================
-// CART FUNCTIONS
-// ============================================================
+function syncProductsFromCloud() {
+  if (typeof db !== 'undefined') {
+    db.collection("catalog").doc("main").get().then((doc) => {
+      if (doc.exists) {
+        const cloudProducts = doc.data().items;
+        if (cloudProducts && cloudProducts.length > 0) {
+          localStorage.setItem('ginoProducts', JSON.stringify(cloudProducts));
+          
+          if (typeof renderCatalog === 'function') {
+             const activeFilter = document.querySelector('.filter-btn.active');
+             renderCatalog(activeFilter ? activeFilter.dataset.category : '');
+          }
+        }
+      } else {
+        console.log("מעלה מוצרים ראשוניים לענן...");
+        saveProducts(EMBEDDED_PRODUCTS);
+      }
+    }).catch(err => console.log("שגיאה במשיכת מוצרים:", err));
+  }
+}
 
-/**
- * Returns current cart from localStorage.
- * Cart item shape: { name, category, price, discountPrice, qty }
- */
+window.addEventListener('load', syncProductsFromCloud);
+
+// ============================================================
+// CART FUNCTIONS (ללא כפילויות)
+// ============================================================
 function getCart() {
-  try {
-    const stored = localStorage.getItem('ginoCart');
-    if (stored) return JSON.parse(stored);
-  } catch (e) {}
-  return [];
+    try {
+        const cart = localStorage.getItem('ginoCart');
+        return cart ? JSON.parse(cart) : [];
+    } catch (e) {
+        return [];
+    }
 }
 
-/**
- * Saves cart array to localStorage.
- * @param {Array} arr
- */
 function saveCart(arr) {
-  localStorage.setItem('ginoCart', JSON.stringify(arr));
+    localStorage.setItem('ginoCart', JSON.stringify(arr));
 }
-
-/**
- * Adds a product to the cart (or increments quantity).
- * @param {Object} product - product object from getProducts()
- * @param {number} qty - quantity to add (default 1)
- */
 
 function addToCart(nameOrObject, price, image) {
     let cart = getCart();
@@ -622,42 +625,37 @@ function addToCart(nameOrObject, price, image) {
     let finalPrice = 0;
     let finalImage = image || '';
 
-    // אם זה אובייקט מוצר
     if (typeof nameOrObject === 'object' && nameOrObject !== null) {
-        finalName = nameOrObject.name || 'מוצר';
-        
-        finalPrice = (nameOrObject.discountPrice && nameOrObject.discountPrice > 0)
-            ? Number(nameOrObject.discountPrice)
-            : Number(nameOrObject.price);
-
-        finalImage = nameOrObject.image || image || '';
+        finalName = nameOrObject.name?.name || nameOrObject.name || 'מוצר';
+        finalPrice = Number(
+            nameOrObject.discountPrice > 0
+                ? nameOrObject.discountPrice
+                : nameOrObject.price
+        );
+        finalImage = nameOrObject.image || '';
     } else {
-        // אם זה פרמטרים רגילים
-        finalName = nameOrObject || 'מוצר';
+        finalName = nameOrObject;
         finalPrice = Number(price);
     }
 
-    // הגנה שלא יצא NaN
-    if (!finalPrice || isNaN(finalPrice)) {
-        finalPrice = 0;
-    }
+    if (isNaN(finalPrice)) finalPrice = 0;
 
     const existingItem = cart.find(item => item.name === finalName);
-    
+
     if (existingItem) {
         existingItem.qty += 1;
     } else {
-        cart.push({ 
+        cart.push({
             name: finalName,
             price: finalPrice,
             qty: 1,
             image: finalImage
         });
     }
-    
-    localStorage.setItem('ginoCart', JSON.stringify(cart));
+
+    saveCart(cart);
     updateCartCountUI();
-    
+
     const popup = document.getElementById('cart-popup');
     if (popup) {
         popup.classList.add('active');
@@ -665,61 +663,98 @@ function addToCart(nameOrObject, price, image) {
     }
 }
 
-/**
- * Removes an item from the cart by product name.
- * @param {string} name
- */
 function removeFromCart(name) {
-  let cart = getCart().filter(item => item.name !== name);
+    let cart = getCart().filter(item => item.name !== name);
     saveCart(cart);
-  updateCartCountUI();
-}
-
-/**
- * Clears the entire cart.
- */
-function clearCart() {
-  saveCart([]);
     updateCartCountUI();
 }
 
-/**
- * Updates the cart count badge in the UI (if element exists).
- */
+function clearCart() {
+    saveCart([]);
+    updateCartCountUI();
+}
+
 function updateCartCountUI() {
-  const el = document.getElementById('cart-count');
-  if (el) {
-    const cart = getCart();
-    const total = cart.reduce((s, i) => s + i.qty, 0);
-    el.textContent = total;
+    const el = document.getElementById('cart-count');
+    if (el) {
+        const cart = getCart();
+        const total = cart.reduce((s, i) => s + i.qty, 0);
+        el.textContent = total;
+    }
 }
-}
+document.addEventListener('DOMContentLoaded', updateCartCountUI);
 
 // ============================================================
 // SETTINGS FUNCTIONS
 // ============================================================
-
 const DEFAULT_SETTINGS = {
-  whatsapp: '9720536210899',
-  email: 'MAIN@byspace.org',
-  deliveryEmail: 'MAIN@byspace.org',
-  deliveryWhatsapp: '',
-  deliveryPrice: 30,
-  storeName: 'GINO VINO'
+    whatsapp: '9720536210899',
+    email: 'MAIN@byspace.org',
+    deliveryEmail: 'MAIN@byspace.org',
+    deliveryWhatsapp: '',
+    deliveryPrice: 30,
+    storeName: 'GINO VINO'
 };
 
 function getSettings() {
-  try {
-    const stored = localStorage.getItem('ginoSettings');
-    if (stored) return Object.assign({}, DEFAULT_SETTINGS, JSON.parse(stored));
-  } catch (e) {}
-  return Object.assign({}, DEFAULT_SETTINGS);
+    try {
+        const stored = localStorage.getItem('ginoSettings');
+        if (stored) return Object.assign({}, DEFAULT_SETTINGS, JSON.parse(stored));
+    } catch (e) {}
+    return Object.assign({}, DEFAULT_SETTINGS);
 }
 
 function saveSettings(obj) {
-  localStorage.setItem('ginoSettings', JSON.stringify(obj));
+    localStorage.setItem('ginoSettings', JSON.stringify(obj));
 }
 
+// ============================================================
+// ORDERS FUNCTIONS
+// ============================================================
+function getOrders() {
+    try {
+        const stored = localStorage.getItem('ginoOrders');
+        if (stored) return JSON.parse(stored);
+    } catch (e) {}
+    return [];
+}
+
+function saveOrder(order) {
+    const orders = getOrders();
+    orders.unshift(order);
+    localStorage.setItem('ginoOrders', JSON.stringify(orders.slice(0, 100)));
+}
+
+// ============================================================
+// COUPONS FUNCTIONS
+// ============================================================
+function getCoupons() {
+    const coupons = localStorage.getItem('ginoCoupons');
+    return coupons ? JSON.parse(coupons) : [];
+}
+
+function saveCoupon(code, discountPercent) {
+    let coupons = getCoupons();
+    coupons.push({ code: code.toUpperCase(), discount: parseFloat(discountPercent) });
+    localStorage.setItem('ginoCoupons', JSON.stringify(coupons));
+}
+
+function validateCoupon(code) {
+    const coupons = getCoupons();
+    const found = coupons.find(c => c.code === code.toUpperCase());
+    return found ? found.discount : 0;
+}
+
+// ============================================================
+// SESSION MANAGEMENT
+// ============================================================
+window.addEventListener('load', function() {
+    if (!sessionStorage.getItem('isGinoSessionActive')) {
+        localStorage.removeItem('ginoCart');
+        sessionStorage.setItem('isGinoSessionActive', 'true');
+        console.log("עגלת GINO VINO אופסה לרגל כניסה חדשה");
+    }
+});
 // ============================================================
 // ORDERS FUNCTIONS
 // ============================================================
