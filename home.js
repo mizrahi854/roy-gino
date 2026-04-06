@@ -149,14 +149,14 @@ document.addEventListener('DOMContentLoaded', () => {
   // RENDER PRODUCTS (catalog section on home page)
   // ============================================================
   // Called by body onload or directly
-  window.renderCatalog = function(categoryFilter) {
+  window.renderCatalog = async function(categoryFilter) {
     const container = document.getElementById('products');
     if (!container) return;
 
-    const products = (typeof getProducts === 'function') ? getProducts() : [];
+    const products = (typeof getProducts === 'function') ? await getProducts() : [];
     let filtered = categoryFilter
-      ? products.filter(p => p.category === categoryFilter)
-      : products;
+      ? products.filter(p => p.category === categoryFilter && p.isActive)
+      : products.filter(p => p.isActive);
 
     // Show first 20 on home page
     if (!categoryFilter) filtered = filtered.slice(0, 20);
@@ -214,12 +214,13 @@ document.addEventListener('DOMContentLoaded', () => {
   // ============================================================
   // RENDER PRODUCTS FOR CATEGORY PAGES
   // ============================================================
-  window.renderProducts = function(categoryName) {
+  window.renderProducts = async function(categoryName) {
+    window.currentCategory = categoryName; // For real-time updates
     const container = document.getElementById('products');
     if (!container) return;
 
-    const products = (typeof getProducts === 'function') ? getProducts() : [];
-    const filtered = products.filter(p => p.category === categoryName);
+    const products = (typeof getProducts === 'function') ? await getProducts() : [];
+    const filtered = products.filter(p => p.category === categoryName && p.isActive);
 
     container.innerHTML = '';
 
@@ -290,13 +291,28 @@ document.addEventListener('DOMContentLoaded', () => {
   // CATEGORY FILTER BUTTONS (if present on page)
   // ============================================================
   document.querySelectorAll('.filter-btn').forEach(btn => {
-    btn.addEventListener('click', () => {
+    btn.addEventListener('click', async () => {
       document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
       btn.classList.add('active');
       const cat = btn.dataset.category;
-      if (typeof renderProducts === 'function') renderProducts(cat || null);
+      if (typeof renderProducts === 'function') await renderProducts(cat || null);
     });
   });
+
+  // ============================================================
+  // REAL-TIME UPDATES FOR PRODUCTS
+  // ============================================================
+  if (window.db) {
+    window.db.collection('products').onSnapshot(async () => {
+      // Re-render products if functions exist
+      if (typeof window.renderCatalog === 'function') {
+        await window.renderCatalog();
+      }
+      if (typeof window.renderProducts === 'function' && window.currentCategory) {
+        await window.renderProducts(window.currentCategory);
+      }
+    });
+  }
 
 });
 
