@@ -235,8 +235,8 @@
     <div class="login-box">
       <h1><i class="fas fa-wine-bottle" style="margin-left:10px"></i>GINO VINO</h1>
       <p>כניסה לממשק הניהול</p>
-      <input type="password" id="passwordInput" placeholder="סיסמה" onkeydown="if(event.key==='Enter')doLogin()">
-      <button class="login-btn" onclick="doLogin()">כניסה</button>
+      <input type="password" id="passwordInput" placeholder="סיסמה" onkeydown="if(event.key==='Enter'){event.preventDefault(); doLogin();}">
+      <button type="button" class="login-btn" onclick="doLogin()">כניסה</button>
       <div class="login-error" id="loginError">סיסמה שגויה. נסה שוב.</div>
     </div>
   </div>
@@ -807,200 +807,84 @@
       if (sessionStorage.getItem('ginoAdmin') === '1') initAdmin();
     });
 
+    async function addNewCoupon() {
+      const code = document.getElementById('couponCode').value.trim().toUpperCase();
+      const discount = parseFloat(document.getElementById('couponDiscount').value) || 0;
+      const expiry = document.getElementById('couponExpiry').value;
+      const freeShipping = document.getElementById('couponFreeShipping').checked;
 
-    // --- הוסף את הקוד הזה בתוך ה-Script בטאב ההזמנות ---
-
-  function renderOrders() {
-      const container = document.getElementById('ordersContainer');
-      const searchVal = document.getElementById('orderSearchInput')?.value.toLowerCase() || "";
-      if (!container) return;
-      
-      let orders = (typeof getOrders === 'function') ? getOrders() : [];
-
-      // פילטר חיפוש
-      if (searchVal) {
-          orders = orders.filter(o => 
-              o.orderId.toLowerCase().includes(searchVal) || 
-              o.fullname.toLowerCase().includes(searchVal) ||
-              o.phone.includes(searchVal)
-          );
+      if (!code) {
+        alert('חסר קוד קופון');
+        return;
       }
 
-      if (!orders.length) {
-          container.innerHTML = '<p style="color:var(--text3);text-align:center;padding:40px">לא נמצאו הזמנות תואמות.</p>';
-          return;
+      const coupons = JSON.parse(localStorage.getItem('ginoCoupons') || '[]');
+
+      if (coupons.find(c => c.code === code)) {
+        alert('קופון כבר קיים');
+        return;
       }
 
-      container.innerHTML = '';
-      // הצגת ההזמנות מהחדשה ביותר לישנה
-      orders.reverse().forEach(order => {
-          // ... (הקוד הקיים של יצירת ה-card)
+      coupons.push({
+        code,
+        discount,
+        expiryDate: expiry || null,
+        freeShipping
       });
-  }
 
+      localStorage.setItem('ginoCoupons', JSON.stringify(coupons));
 
+      document.getElementById('couponCode').value = '';
+      document.getElementById('couponDiscount').value = '';
+      document.getElementById('couponExpiry').value = '';
+      document.getElementById('couponFreeShipping').checked = false;
 
-  async function addNewCoupon() {
-    const code = document.getElementById('couponCode').value.trim();
-    const discount = parseFloat(document.getElementById('couponDiscount').value) || 0;
-    const expiry = document.getElementById('couponExpiry').value;
-    const freeShipping = document.getElementById('couponFreeShipping').checked;
-
-    if (!code) return alert('חסר קוד קופון');
-
-    const coupon = {
-      code,
-      discount,
-      freeShipping,
-      expiry: expiry ? new Date(expiry) : null,
-      createdAt: firebase.firestore.FieldValue.serverTimestamp()
-    };
-
-    await saveCoupon(coupon);
-
-    document.getElementById('couponCode').value = '';
-    document.getElementById('couponDiscount').value = '';
-    document.getElementById('couponExpiry').value = '';
-    document.getElementById('couponFreeShipping').checked = false;
-
-    await renderCoupons();
-  }
-
-  async function renderCoupons() {
-    const box = document.getElementById('couponsList');
-    const coupons = await getCoupons();
-
-    if (coupons.length === 0) {
-      box.innerHTML = '<p style="color:var(--text3); font-size:0.9rem;">אין קופונים פעילים</p>';
-      return;
+      renderCoupons();
+      showToast('קופון נוצר בהצלחה');
     }
 
-  box.innerHTML = coupons.map((c) => {
-    // עיצוב התאריך לתצוגה
-    const dateDisplay = c.expiry ? `<br><span style="font-size:0.8rem; color:var(--text3)">📅 בתוקף עד: ${c.expiry.toDate().toLocaleDateString('he-IL')}</span>` : '<br><span style="font-size:0.8rem; color:var(--text3)">📅 ללא הגבלת זמן</span>';
-    
-    return `
-      <div style="background:#1a1a1a; padding:12px; border-radius:8px; margin-top:8px; border:1px solid rgba(212,175,55,0.2); display:flex; justify-content:space-between; align-items:center;">
-        <div>
-          <b style="color:var(--gold)">${c.code}</b> | ${c.discount}% הנחה
+    function renderCoupons() {
+      const box = document.getElementById('couponsList');
+      if (!box) return;
+
+      const coupons = JSON.parse(localStorage.getItem('ginoCoupons') || '[]');
+      if (coupons.length === 0) {
+        box.innerHTML = '<p style="color:var(--text3); font-size:0.9rem;">אין קופונים פעילים</p>';
+        return;
+      }
+
+      box.innerHTML = coupons.map((c, i) => `
+        <div style="background:#1a1a1a;padding:10px;border-radius:8px;margin-top:8px;border:1px solid rgba(212,175,55,0.2)">
+          <b>${c.code}</b> | ${c.discount}% הנחה
           ${c.freeShipping ? ' | 🚚 משלוח חינם' : ''}
-          ${dateDisplay}
+          ${c.expiryDate ? `<br><span style="font-size:0.8rem; color:var(--text3)">📅 בתוקף עד: ${new Date(c.expiryDate).toLocaleDateString('he-IL')}</span>` : ''}
+          <button onclick="deleteCoupon(${i})"
+            style="margin-right:10px;background:red;color:#fff;border:none;padding:5px 8px;border-radius:6px;cursor:pointer">
+            מחיקה
+          </button>
         </div>
-        <button onclick="deleteCoupon('${c.id}')"
-          style="background:rgba(192,57,43,0.2); color:var(--red); border:1px solid var(--red); padding:5px 10px; border-radius:6px; cursor:pointer; font-size:0.8rem;">
-          מחיקה
-        </button>
-      </div>
-    `;
-  }).join('');
-}
+      `).join('');
+    }
 
+    function deleteCoupon(index) {
+      if (!confirm('האם למחוק קופון זה?')) return;
+      const coupons = JSON.parse(localStorage.getItem('ginoCoupons') || '[]');
+      coupons.splice(index, 1);
+      localStorage.setItem('ginoCoupons', JSON.stringify(coupons));
+      renderCoupons();
+      showToast('קופון נמחק');
+    }
 
-  function addNewCoupon() {
-  const code = document.getElementById('couponCode').value.trim();
-  const discount = parseFloat(document.getElementById('couponDiscount').value) || 0;
-  const freeShipping = document.getElementById('couponFreeShipping').checked;
-
-  if (!code) return alert('חסר קוד קופון');
-
-  const coupons = JSON.parse(localStorage.getItem('ginoCoupons') || '[]');
-
-  if (coupons.find(c => c.code === code)) {
-    return alert('קופון כבר קיים');
-  }
-
-  coupons.push({ code, discount, freeShipping });
-
-  localStorage.setItem('ginoCoupons', JSON.stringify(coupons));
-
-  document.getElementById('couponCode').value = '';
-  document.getElementById('couponDiscount').value = '';
-  document.getElementById('couponFreeShipping').checked = false;
-
-  renderCoupons();
-  showToast('קופון נוצר');
-}
-
-function renderCoupons() {
-  const box = document.getElementById('couponsList');
-  const coupons = JSON.parse(localStorage.getItem('ginoCoupons') || '[]');
-
-  box.innerHTML = coupons.map((c, i) => `
-    <div style="background:#1a1a1a;padding:10px;border-radius:8px;margin-top:8px;border:1px solid rgba(212,175,55,0.2)">
-      <b>${c.code}</b> | ${c.discount}% הנחה
-      ${c.freeShipping ? ' | 🚚 משלוח חינם' : ''}
-
-      <button onclick="deleteCoupon(${i})"
-        style="margin-right:10px;background:red;color:#fff;border:none;padding:5px 8px;border-radius:6px;cursor:pointer">
-        מחיקה
-      </button>
-    </div>
-  `).join('');
-}
-async function deleteCoupon(id) {
-  if (!confirm('האם למחוק קופון זה?')) return;
-  await deleteCoupon(id);
-  await renderCoupons();
-  showToast('קופון נמחק');
-}
-window.addEventListener('DOMContentLoaded', async () => {
-  await renderCoupons();
-});
-
-
-function addNewCoupon() {
-  const code = document.getElementById('couponCode').value.trim().toUpperCase();
-  const discount = parseFloat(document.getElementById('couponDiscount').value) || 0;
-  const expiry = document.getElementById('couponExpiry').value; // שורת התאריך החדשה
-  const freeShipping = document.getElementById('couponFreeShipping').checked;
-
-  if (!code) return alert('חסר קוד קופון');
-
-  const coupons = JSON.parse(localStorage.getItem('ginoCoupons') || '[]');
-
-  if (coupons.find(c => c.code === code)) {
-    return alert('קופון כבר קיים');
-  }
-
-  // שומרים גם את ה-expiryDate
-  coupons.push({ 
-    code, 
-    discount, 
-    freeShipping, 
-    expiryDate: expiry 
-  });
-
-  localStorage.setItem('ginoCoupons', JSON.stringify(coupons));
-
-  // ניקוי הטופס
-  document.getElementById('couponCode').value = '';
-  document.getElementById('couponDiscount').value = '';
-  document.getElementById('couponExpiry').value = '';
-  document.getElementById('couponFreeShipping').checked = false;
-
-  renderCoupons();
-  showToast('קופון נוצר בהצלחה');
-}
-
-async function setAllProductsActive() {
-    // 1. בקשת אישור מהמשתמש כדי למנוע טעויות
-    if (!confirm('האם להפוך את כל המוצרים באתר לפעילים במלאי?')) return;
-
-    // 2. משיכת כל המוצרים מהזיכרון
-    const prods = await getProducts();
-
-    // 3. עדכון כל מוצר למצב פעיל
-    prods.forEach(p => {
+    async function setAllProductsActive() {
+      if (!confirm('האם להפוך את כל המוצרים באתר לפעילים במלאי?')) return;
+      const prods = await getProducts();
+      prods.forEach(p => {
         p.isActive = true;
-    });
-
-    // 4. שמירה חזרה ל-Firestore
-    await saveProducts(prods);
-
-    // 5. רענון הטבלה והצגת הודעת אישור
-    await renderProductsTable();
-    showToast('כל המוצרים עודכנו כפעילים במלאי!');
-}
+      });
+      await saveProducts(prods);
+      await renderProductsTable();
+      showToast('כל המוצרים עודכנו כפעילים במלאי!');
+    }
 
   </script>
 
