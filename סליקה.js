@@ -235,10 +235,10 @@ window.showCheckoutForm = function() {
 /* ============================================================
    FORM VALIDATION & SUBMIT
    ============================================================ */
-async function onFormSubmit(e) {
+function onFormSubmit(e) {
   e.preventDefault();
   if (!validateForm()) return;
-  await buildOrderData();
+  buildOrderData();
   showGammaPayment();
 }
 
@@ -306,7 +306,7 @@ function validateForm() {
   return valid;
 }
 
-async function buildOrderData() {
+function buildOrderData() {
   const cart = JSON.parse(localStorage.getItem('ginoCart')) || [];
   
   const subtotal = getSubtotal();
@@ -335,7 +335,7 @@ async function buildOrderData() {
     date: new Date().toISOString()
   };
 
-  if (typeof saveOrder === 'function') await saveOrder(orderData);
+  if (typeof saveOrder === 'function') saveOrder(orderData);
 }
 
 /* ============================================================
