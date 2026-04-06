@@ -972,5 +972,75 @@ function setAllProductsActive() {
 }
 
   </script>
+
+<!-- Add this script tag -->
+<script type="module">
+  import { initializeApp } from 'https://www.gstatic.com/firebasejs/9.22.0/firebase-app.js';
+  import { getFirestore, doc, setDoc, getDoc, collection, addDoc, getDocs, updateDoc, deleteDoc } from 'https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore.js';
+
+  const firebaseConfig = {
+    apiKey: "YOUR_API_KEY",
+    authDomain: "YOUR_PROJECT.firebaseapp.com",
+    projectId: "YOUR_PROJECT_ID",
+    storageBucket: "YOUR_PROJECT.appspot.com",
+    messagingSenderId: "YOUR_SENDER_ID",
+    appId: "YOUR_APP_ID"
+  };
+
+  const app = initializeApp(firebaseConfig);
+  const db = getFirestore(app);
+
+  // Make db global for use in other scripts
+  window.db = db;
+
+
+
+// Replace getProducts, saveProducts, etc.
+// Example: Products
+async function getProducts() {
+  const querySnapshot = await getDocs(collection(window.db, 'products'));
+  return querySnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+}
+
+async function saveProducts(products) {
+  // Clear and re-save all products
+  const batch = writeBatch(window.db);
+  const querySnapshot = await getDocs(collection(window.db, 'products'));
+  querySnapshot.forEach(doc => batch.delete(doc.ref));
+  products.forEach(product => {
+    const docRef = doc(collection(window.db, 'products'));
+    batch.set(docRef, product);
+  });
+  await batch.commit();
+}
+
+// For settings
+async function getSettings() {
+  const docSnap = await getDoc(doc(window.db, 'settings', 'global'));
+  return docSnap.exists() ? docSnap.data() : {};
+}
+
+async function saveSettings(settings) {
+  await setDoc(doc(window.db, 'settings', 'global'), settings);
+}
+
+// For coupons
+async function getCoupons() {
+  const querySnapshot = await getDocs(collection(window.db, 'coupons'));
+  return querySnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+}
+
+async function saveCoupons(coupons) {
+  // Similar batch update as products
+}
+
+// Update renderCoupons, addNewCoupon, etc., to use getCoupons() and saveCoupons()
+
+
+
+
+
+</script>
+
   </body>
   </html>
