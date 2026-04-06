@@ -571,7 +571,15 @@ const EMBEDDED_PRODUCTS = [
  * Returns product array from Firestore or embedded fallback.
  */
 async function getProducts() {
-  // Always use embedded products for static site
+  if (!window.db) return EMBEDDED_PRODUCTS.slice();
+  try {
+    const snapshot = await window.db.collection('products').get();
+    if (!snapshot.empty) {
+      return snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+    }
+  } catch (e) {
+    console.error('Error getting products:', e);
+  }
   return EMBEDDED_PRODUCTS.slice();
 }
 

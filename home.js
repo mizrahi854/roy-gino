@@ -155,8 +155,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
     const products = (typeof getProducts === 'function') ? await getProducts() : [];
     let filtered = categoryFilter
-      ? products.filter(p => p.category === categoryFilter && p.isActive)
-      : products.filter(p => p.isActive);
+      ? products.filter(p => p.category === categoryFilter)
+      : products;
 
     // Show first 20 on home page
     if (!categoryFilter) filtered = filtered.slice(0, 20);
@@ -220,7 +220,7 @@ document.addEventListener('DOMContentLoaded', () => {
     if (!container) return;
 
     const products = (typeof getProducts === 'function') ? await getProducts() : [];
-    const filtered = products.filter(p => p.category === categoryName && p.isActive);
+    const filtered = products.filter(p => p.category === categoryName);
 
     container.innerHTML = '';
 
