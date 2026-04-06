@@ -727,17 +727,18 @@ const DEFAULT_SETTINGS = {
   storeName: 'GINO VINO'
 };
 
-async function getSettings() {
+function getSettings() {
   if (!window.db) return Object.assign({}, DEFAULT_SETTINGS);
-  try {
-    const docSnap = await window.db.collection('settings').doc('main').get();
-    if (docSnap.exists) {
-      return Object.assign({}, DEFAULT_SETTINGS, docSnap.data());
-    }
-  } catch (e) {
-    console.error('Error getting settings:', e);
-  }
-  return Object.assign({}, DEFAULT_SETTINGS);
+  // For real-time, but for now async get
+  return new Promise((resolve) => {
+    window.db.collection('settings').doc('main').get().then(doc => {
+      if (doc.exists) {
+        resolve(Object.assign({}, DEFAULT_SETTINGS, doc.data()));
+      } else {
+        resolve(Object.assign({}, DEFAULT_SETTINGS));
+      }
+    }).catch(() => resolve(Object.assign({}, DEFAULT_SETTINGS)));
+  });
 }
 
 async function saveSettings(obj) {
@@ -764,32 +765,15 @@ async function getOrders() {
   }
 }
 
-async function getCoupons() {
-  if (!window.db) return [];
-  try {
-    const snapshot = await window.db.collection('coupons').get();
-    return snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
-  } catch (e) {
-    console.error('Error getting coupons:', e);
-    return [];
-  }
-}
-
-async function saveCoupon(coupon) {
+async function saveOrder(order) {
   if (!window.db) return;
   try {
-    await window.db.collection('coupons').add(coupon);
+    await window.db.collection('orders').add({
+      ...order,
+      timestamp: firebase.firestore.FieldValue.serverTimestamp()
+    });
   } catch (e) {
-    console.error('Error saving coupon:', e);
-  }
-}
-
-async function deleteCoupon(id) {
-  if (!window.db) return;
-  try {
-    await window.db.collection('coupons').doc(id).delete();
-  } catch (e) {
-    console.error('Error deleting coupon:', e);
+    console.error('Error saving order:', e);
   }
 }
 
