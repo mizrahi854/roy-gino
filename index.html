@@ -23,14 +23,9 @@
     };
 
     // Initialize Firebase
-    try {
-      firebase.initializeApp(firebaseConfig);
-      const db = firebase.firestore();
-      window.db = db;
-    } catch (e) {
-      console.error('Firebase init failed:', e);
-      window.db = null;
-    }
+    firebase.initializeApp(firebaseConfig);
+    const db = firebase.firestore();
+    window.db = db;
   </script>
 </head>
 <body>
@@ -447,16 +442,16 @@
 <script src="home.js"></script>
 <script>
   // Render catalog on page load
-  document.addEventListener('DOMContentLoaded', async () => {
-    await renderCatalog('');
+  document.addEventListener('DOMContentLoaded', () => {
+    renderCatalog('');
 
     // Category filter buttons
     document.querySelectorAll('.filter-btn').forEach(btn => {
-      btn.addEventListener('click', async () => {
+      btn.addEventListener('click', () => {
         document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
         btn.classList.add('active');
         const cat = btn.dataset.category;
-        await renderCatalog(cat);
+        renderCatalog(cat);
       });
     });
   });
