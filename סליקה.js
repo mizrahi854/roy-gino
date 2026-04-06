@@ -553,14 +553,3 @@ function applyCoupon() {
 
   document.getElementById('couponMessage').textContent = 'קופון הופעל!';
 }
-
-
-// Replace getOrders, saveOrder
-async function getOrders() {
-  const querySnapshot = await getDocs(collection(window.db, 'orders'));
-  return querySnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
-}
-
-async function saveOrder(order) {
-  await addDoc(collection(window.db, 'orders'), order);
-}
