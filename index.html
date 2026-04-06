@@ -9,12 +9,25 @@
   <link href="https://fonts.googleapis.com/css2?family=Assistant:wght@300;400;600;700;800&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
   <link rel="stylesheet" href="home.css">
+  
+  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
+  <script>
+    const firebaseConfig = {
+      apiKey: "AIzaSyDAQaqzu0POejzH5OLorcRn0UqvnjM5n4M",
+      authDomain: "gino-vino.firebaseapp.com",
+      projectId: "gino-vino",
+      storageBucket: "gino-vino.firebasestorage.app",
+      messagingSenderId: "441401731488",
+      appId: "1:441401731488:web:234d7a17d7830e84105cc5",
+      measurementId: "G-CMMLZR3GXT"
+    };
+    firebase.initializeApp(firebaseConfig);
+    const db = firebase.firestore();
+  </script>
 </head>
 <body>
 
-<!-- ============================================================
-     AGE GATE OVERLAY
-     ============================================================ -->
 <div id="ageGate">
   <div class="age-gate-box">
     <img src="תמונת.jpg/לוגו להשתמש.jpeg" alt="GINO VINO Logo">
@@ -27,9 +40,6 @@
   </div>
 </div>
 
-<!-- ============================================================
-     TOP BAR
-     ============================================================ -->
 <div class="top-bar">
   <div class="top-icons">
     <a href="https://www.instagram.com/gino_vino_israel/" aria-label="Instagram" target="_blank" rel="noopener">
@@ -41,9 +51,6 @@
   </div>
 </div>
 
-<!-- ============================================================
-     HEADER
-     ============================================================ -->
 <header class="main-header">
   <a href="index.html" class="logo">
    <img src="תמונת.jpg/לוגו להשתמש.jpeg" alt="GINO VINO">
@@ -72,7 +79,6 @@
   </div>
 </header>
 
-<!-- Mobile Nav -->
 <nav id="mobileNav">
   <a href="index.html">דף הבית</a>
   <a href="#about">אודות</a>
@@ -85,7 +91,6 @@
   <a href="תשלום.html">עגלת קניות</a>
 </nav>
 
-<!-- Cart Popup -->
 <div id="cart-popup" class="cart-popup">
   <p><i class="fas fa-check-circle"></i> המוצר נוסף לעגלה!</p>
   <div class="popup-buttons">
@@ -94,9 +99,6 @@
   </div>
 </div>
 
-<!-- ============================================================
-     HERO SECTION
-     ============================================================ -->
 <section class="hero">
   <img src="תמונת.jpg/לוגו להשתמש.jpeg" alt="GINO VINO" class="hero-video">
   <div class="hero-overlay">
@@ -108,9 +110,6 @@
   <div class="hero-scroll"><i class="fas fa-chevron-down"></i></div>
 </section>
 
-<!-- ============================================================
-     STATS
-     ============================================================ -->
 <section class="stats-section reveal">
   <div class="stats-grid">
     <div class="stat-item">
@@ -132,9 +131,6 @@
   </div>
 </section>
 
-<!-- ============================================================
-     SERVICES
-     ============================================================ -->
 <section class="services reveal" id="services">
   <h2>השירותים שלנו</h2>
   <div class="services-grid">
@@ -166,9 +162,6 @@
   </div>
 </section>
 
-<!-- ============================================================
-     ABOUT
-     ============================================================ -->
 <section class="about reveal" id="about">
   <div class="about-container">
     <img src="תמונת.jpg/logo (1).jpg" alt="GINO VINO" class="about-logo">
@@ -187,9 +180,6 @@
   </div>
 </section>
 
-<!-- ============================================================
-     CATEGORIES
-     ============================================================ -->
 <section class="categories reveal" id="categories">
   <h2>קטגוריות</h2>
   <div class="categories-grid" id="categoriesGrid">
@@ -243,9 +233,6 @@
   </div>
 </section>
 
-<!-- ============================================================
-     GALLERY PREVIEW
-     ============================================================ -->
 <section class="gallery-preview-section reveal" id="gallery-preview">
   <h2>גלריית תמונות</h2>
   <div class="preview-grid">
@@ -260,17 +247,13 @@
   <button class="see-more-btn">ראה עוד תמונות</button>
 </section>
 
-<!-- Lightbox -->
 <div id="lightbox" class="lightbox">
-  <span class="close">&times;</span>
-  <button class="prev">&#10094;</button>
+  <span class="close">×</span>
+  <button class="prev">❮</button>
   <div class="lightbox-content"></div>
-  <button class="next">&#10095;</button>
+  <button class="next">❯</button>
 </div>
 
-<!-- ============================================================
-     CATALOG
-     ============================================================ -->
 <section class="catalog reveal" id="catalog">
   <h2>קטלוג מוצרים</h2>
   <div class="catalog-filters">
@@ -290,9 +273,6 @@
   <div id="products"></div>
 </section>
 
-<!-- ============================================================
-     FAQ
-     ============================================================ -->
 <section class="faq reveal" id="faq">
   <h2>שאלות נפוצות</h2>
 
@@ -367,9 +347,6 @@
   </div>
 </section>
 
-<!-- ============================================================
-     CONTACT
-     ============================================================ -->
 <section class="store-info reveal" id="contact">
   <h3>פרטי החנות</h3>
   <p><strong>כתובת:</strong> דרך הרמתיים 35, הוד השרון</p>
@@ -385,9 +362,6 @@
   </iframe>
 </div>
 
-<!-- ============================================================
-     FOOTER
-     ============================================================ -->
 <div class="footer-links">
   <a href="תקנון.html">תקנון האתר</a>
   <span>|</span>
@@ -407,9 +381,6 @@
   <a href="admin.html" class="footer-admin-link">ניהול</a>
 </div>
 
-<!-- ============================================================
-     FLOATING BUTTONS
-     ============================================================ -->
 <div class="floating-buttons-container">
   <a href="tel:0536210899" class="floating-btn phone" aria-label="טלפון">
     <i class="fas fa-phone"></i>
@@ -419,13 +390,14 @@
   </a>
 </div>
 
-<!-- Scripts: products.js MUST load before home.js -->
 <script src="products.js"></script>
 <script src="home.js"></script>
 <script>
   // Render catalog on page load
   document.addEventListener('DOMContentLoaded', () => {
-    renderCatalog('');
+    if (typeof renderCatalog === 'function') {
+      renderCatalog('');
+    }
 
     // Category filter buttons
     document.querySelectorAll('.filter-btn').forEach(btn => {
@@ -433,7 +405,9 @@
         document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
         btn.classList.add('active');
         const cat = btn.dataset.category;
-        renderCatalog(cat);
+        if (typeof renderCatalog === 'function') {
+          renderCatalog(cat);
+        }
       });
     });
   });
