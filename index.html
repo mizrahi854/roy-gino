@@ -9,6 +9,9 @@
   <link href="https://fonts.googleapis.com/css2?family=Assistant:wght@300;400;600;700;800&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
   <link rel="stylesheet" href="home.css">
+  <script>
+    // Products are loaded from embedded data in products.js
+  </script>
 </head>
 <body>
 
@@ -424,16 +427,16 @@
 <script src="home.js"></script>
 <script>
   // Render catalog on page load
-  document.addEventListener('DOMContentLoaded', () => {
-    renderCatalog('');
+  document.addEventListener('DOMContentLoaded', async () => {
+    await renderCatalog('');
 
     // Category filter buttons
     document.querySelectorAll('.filter-btn').forEach(btn => {
-      btn.addEventListener('click', () => {
+      btn.addEventListener('click', async () => {
         document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
         btn.classList.add('active');
         const cat = btn.dataset.category;
-        renderCatalog(cat);
+        await renderCatalog(cat);
       });
     });
   });
