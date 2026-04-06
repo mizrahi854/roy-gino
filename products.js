@@ -568,22 +568,41 @@ const EMBEDDED_PRODUCTS = [
 // ============================================================
 
 /**
- * Returns product array from localStorage (admin edits) or embedded fallback.
+ * Returns product array from Firestore or embedded fallback.
  */
-function getProducts() {
+async function getProducts() {
+  if (!window.db) return EMBEDDED_PRODUCTS.slice();
   try {
-    const stored = localStorage.getItem('ginoProducts');
-    if (stored) return JSON.parse(stored);
-  } catch (e) {}
+    const snapshot = await window.db.collection('products').get();
+    if (!snapshot.empty) {
+      return snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+    }
+  } catch (e) {
+    console.error('Error getting products:', e);
+  }
   return EMBEDDED_PRODUCTS.slice();
 }
 
 /**
- * Saves product array to localStorage.
+ * Saves product array to Firestore.
  * @param {Array} arr
  */
-function saveProducts(arr) {
-  localStorage.setItem('ginoProducts', JSON.stringify(arr));
+async function saveProducts(arr) {
+  if (!window.db) return;
+  try {
+    const batch = window.db.batch();
+    // Delete existing
+    const existing = await window.db.collection('products').get();
+    existing.docs.forEach(doc => batch.delete(doc.ref));
+    // Add new
+    arr.forEach(product => {
+      const ref = window.db.collection('products').doc();
+      batch.set(ref, product);
+    });
+    await batch.commit();
+  } catch (e) {
+    console.error('Error saving products:', e);
+  }
 }
 
 // ============================================================
@@ -708,35 +727,70 @@ const DEFAULT_SETTINGS = {
   storeName: 'GINO VINO'
 };
 
-function getSettings() {
+async function getSettings() {
+  if (!window.db) return Object.assign({}, DEFAULT_SETTINGS);
   try {
-    const stored = localStorage.getItem('ginoSettings');
-    if (stored) return Object.assign({}, DEFAULT_SETTINGS, JSON.parse(stored));
-  } catch (e) {}
+    const docSnap = await window.db.collection('settings').doc('main').get();
+    if (docSnap.exists) {
+      return Object.assign({}, DEFAULT_SETTINGS, docSnap.data());
+    }
+  } catch (e) {
+    console.error('Error getting settings:', e);
+  }
   return Object.assign({}, DEFAULT_SETTINGS);
 }
 
-function saveSettings(obj) {
-  localStorage.setItem('ginoSettings', JSON.stringify(obj));
+async function saveSettings(obj) {
+  if (!window.db) return;
+  try {
+    await window.db.collection('settings').doc('main').set(obj);
+  } catch (e) {
+    console.error('Error saving settings:', e);
+  }
 }
 
 // ============================================================
 // ORDERS FUNCTIONS
 // ============================================================
 
-function getOrders() {
+async function getOrders() {
+  if (!window.db) return [];
   try {
-    const stored = localStorage.getItem('ginoOrders');
-    if (stored) return JSON.parse(stored);
-  } catch (e) {}
-  return [];
+    const snapshot = await window.db.collection('orders').orderBy('timestamp', 'desc').get();
+    return snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+  } catch (e) {
+    console.error('Error getting orders:', e);
+    return [];
+  }
 }
 
-function saveOrder(order) {
-  const orders = getOrders();
-  orders.unshift(order);
-  // Keep last 100 orders
-  localStorage.setItem('ginoOrders', JSON.stringify(orders.slice(0, 100)));
+async function getCoupons() {
+  if (!window.db) return [];
+  try {
+    const snapshot = await window.db.collection('coupons').get();
+    return snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+  } catch (e) {
+    console.error('Error getting coupons:', e);
+    return [];
+  }
+}
+
+async function saveCoupon(coupon) {
+  if (!window.db) return;
+  try {
+    await window.db.collection('coupons').add(coupon);
+  } catch (e) {
+    console.error('Error saving coupon:', e);
+  }
+}
+
+async function deleteCoupon(id) {
+  if (!window.db) return;
+  try {
+    await window.db.collection('coupons').doc(id).delete();
+  } catch (e) {
+    console.error('Error deleting coupon:', e);
+  }
 }
 
 // Initialize cart count on load
@@ -840,5 +894,3 @@ window.addEventListener('load', function() {
         console.log("עגלת GINO VINO אופסה לרגל כניסה חדשה");
     }
 });
-
-
