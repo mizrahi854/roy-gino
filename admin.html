@@ -20,7 +20,7 @@
       a { text-decoration:none; color:inherit; }
       button { cursor:pointer; font-family:'Assistant',sans-serif; }
       input, select, textarea { font-family:'Assistant',sans-serif; }
-וןחז
+
       /* LOGIN */
       #loginScreen {
         min-height:100vh; display:flex; align-items:center; justify-content:center;
@@ -235,8 +235,8 @@
     <div class="login-box">
       <h1><i class="fas fa-wine-bottle" style="margin-left:10px"></i>GINO VINO</h1>
       <p>כניסה לממשק הניהול</p>
-      <input type="password" id="passwordInput" placeholder="סיסמה" onkeydown="if(event.key==='Enter'){event.preventDefault(); doLogin();}">
-      <button type="button" class="login-btn" onclick="doLogin()">כניסה</button>
+      <input type="password" id="passwordInput" placeholder="סיסמה" onkeydown="if(event.key==='Enter')doLogin()">
+      <button class="login-btn" onclick="doLogin()">כניסה</button>
       <div class="login-error" id="loginError">סיסמה שגויה. נסה שוב.</div>
     </div>
   </div>
@@ -252,9 +252,9 @@
 
     <!-- Tabs -->
     <div class="admin-tabs">
-      <button class="tab-btn active" onclick="switchTabAsync('products', this)"><i class="fas fa-boxes" style="margin-left:6px"></i>מוצרים</button>
-      <button class="tab-btn" onclick="switchTabAsync('settings', this)"><i class="fas fa-cog" style="margin-left:6px"></i>הגדרות</button>
-      <button class="tab-btn" onclick="switchTabAsync('orders', this)"><i class="fas fa-receipt" style="margin-left:6px"></i>הזמנות</button>
+      <button class="tab-btn active" onclick="switchTab('products', this)"><i class="fas fa-boxes" style="margin-left:6px"></i>מוצרים</button>
+      <button class="tab-btn" onclick="switchTab('settings', this)"><i class="fas fa-cog" style="margin-left:6px"></i>הגדרות</button>
+      <button class="tab-btn" onclick="switchTab('orders', this)"><i class="fas fa-receipt" style="margin-left:6px"></i>הזמנות</button>
     </div>
 
     <!-- ═══════════════════════════════════════
@@ -447,27 +447,10 @@
   <div class="save-toast" id="saveToast">✓ נשמר בהצלחה!</div>
 
   <script src="products.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
   <script>
-    // Firebase configuration - replace with your actual config
-    const firebaseConfig = {
-      apiKey: "YOUR_API_KEY",
-      authDomain: "YOUR_PROJECT.firebaseapp.com",
-      projectId: "YOUR_PROJECT_ID",
-      storageBucket: "YOUR_PROJECT.appspot.com",
-      messagingSenderId: "YOUR_SENDER_ID",
-      appId: "YOUR_APP_ID"
-    };
 
-    // Initialize Firebase
-    firebase.initializeApp(firebaseConfig);
-    const db = firebase.firestore();
-    window.db = db;
 
-    (async () => {
-      await renderCoupons();
-    })();
+  renderCoupons();
     /* ──────────────────────────────────────
       ADMIN PASSWORD (change here or in settings)
       Default: ginoadmin123
@@ -513,47 +496,31 @@
     /* ══════════════════════════════════════
       INIT ADMIN
       ══════════════════════════════════════ */
-    async function initAdmin() {
-      await renderProductsTable();
-      await loadSettingsAdmin();
-      await renderOrders();
-
-      // Real-time listeners
-      if (window.db) {
-        window.db.collection('products').onSnapshot(() => {
-          renderProductsTable();
-        });
-        window.db.collection('settings').doc('main').onSnapshot(() => {
-          loadSettingsAdmin();
-        });
-        window.db.collection('orders').onSnapshot(() => {
-          renderOrders();
-        });
-        window.db.collection('coupons').onSnapshot(() => {
-          renderCoupons();
-        });
-      }
+    function initAdmin() {
+      renderProductsTable();
+      loadSettingsAdmin();
+      renderOrders();
     }
 
     /* ══════════════════════════════════════
       TABS
       ══════════════════════════════════════ */
-    async function switchTabAsync(tabId, btn) {
+    function switchTab(tabId, btn) {
       document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
       document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
       document.getElementById('tab-' + tabId)?.classList.add('active');
       btn?.classList.add('active');
-      if (tabId === 'products') await renderProductsTable();
-      if (tabId === 'orders') await renderOrders();
+      if (tabId === 'products') renderProductsTable();
+      if (tabId === 'orders')   renderOrders();
     }
 
     /* ══════════════════════════════════════
       PRODUCTS TABLE
       ══════════════════════════════════════ */
-    async function renderProductsTable() {
+    function renderProductsTable() {
       const query  = (document.getElementById('searchInput')?.value || '').trim().toLowerCase();
       const cat    = document.getElementById('catFilter')?.value || '';
-      const prods  = await getProducts();
+      const prods  = getProducts();
 
       filteredProducts = prods.filter(p => {
         const matchSearch = !query || p.name.toLowerCase().includes(query) || (p.category || '').toLowerCase().includes(query);
@@ -577,7 +544,7 @@
 
       tbody.innerHTML = '';
       slice.forEach((p, localIdx) => {
-        const globalIdx = start + localIdx;
+        const globalIdx = getProducts().findIndex(x => x.name === p.name && x.category === p.category);
         const row = document.createElement('tr');
         row.innerHTML = `
           <td style="color:var(--text3);font-size:0.8rem">${globalIdx + 1}</td>
@@ -621,19 +588,19 @@
       }
     }
 
-    async function updateField(idx, field, value) {
-      const prods = await getProducts();
+    function updateField(idx, field, value) {
+      const prods = getProducts();
       if (!prods[idx]) return;
       prods[idx][field] = value;
-      await saveProducts(prods);
+      saveProducts(prods);
     }
 
-    async function deleteProduct(idx) {
+    function deleteProduct(idx) {
       if (!confirm('האם למחוק מוצר זה?')) return;
-      const prods = await getProducts();
+      const prods = getProducts();
       prods.splice(idx, 1);
-      await saveProducts(prods);
-      await renderProductsTable();
+      saveProducts(prods);
+      renderProductsTable();
       showToast('המוצר נמחק');
     }
 
@@ -670,8 +637,8 @@
       showToast('כל השינויים נשמרו!');
     }
 
-    async function exportJSON() {
-      const prods = await getProducts();
+    function exportJSON() {
+      const prods = getProducts();
       const blob  = new Blob([JSON.stringify(prods, null, 2)], { type: 'application/json' });
       const url   = URL.createObjectURL(blob);
       const a     = document.createElement('a');
@@ -681,34 +648,34 @@
       URL.revokeObjectURL(url);
     }
 
-    async function importJSON(event) {
+    function importJSON(event) {
       const file   = event.target.files?.[0];
       if (!file) return;
       const reader = new FileReader();
-      reader.onload = async (e) => {
+      reader.onload = (e) => {
         try {
           const data = JSON.parse(e.target.result);
           if (!Array.isArray(data)) { alert('קובץ JSON לא תקין'); return; }
-          await saveProducts(data);
-          await renderProductsTable();
+          saveProducts(data);
+          renderProductsTable();
           showToast(`יובאו ${data.length} מוצרים`);
         } catch(err) { alert('שגיאה בקריאת הקובץ: ' + err.message); }
       };
       reader.readAsText(file);
     }
 
-    async function resetToEmbedded() {
+    function resetToEmbedded() {
       if (!confirm('האם לאפס את כל המוצרים לברירת המחדל? פעולה זו לא ניתנת לביטול.')) return;
-      await saveProducts(EMBEDDED_PRODUCTS.slice());
-      await renderProductsTable();
+      localStorage.removeItem('ginoProducts');
+      renderProductsTable();
       showToast('אופס לנתוני ברירת המחדל');
     }
 
     /* ══════════════════════════════════════
       SETTINGS
       ══════════════════════════════════════ */
-    async function loadSettingsAdmin() {
-      const s = (typeof getSettings === 'function') ? await getSettings() : {};
+    function loadSettingsAdmin() {
+      const s = (typeof getSettings === 'function') ? getSettings() : {};
       const fields = {
         'set-whatsapp':         s.whatsapp || '',
         'set-deliveryWhatsapp': s.deliveryWhatsapp || '',
@@ -724,7 +691,7 @@
       });
     }
 
-    async function saveSettingsAdmin() {
+    function saveSettingsAdmin() {
       const s = {
         whatsapp:         document.getElementById('set-whatsapp')?.value.trim(),
         deliveryWhatsapp: document.getElementById('set-deliveryWhatsapp')?.value.trim(),
@@ -734,17 +701,17 @@
         storeName:        document.getElementById('set-storeName')?.value.trim() || 'GINO VINO',
         gammaTerminal:    document.getElementById('set-gammaTerm')?.value.trim()
       };
-      if (typeof saveSettings === 'function') await saveSettings(s);
+      if (typeof saveSettings === 'function') saveSettings(s);
       showToast('ההגדרות נשמרו!');
     }
 
     /* ══════════════════════════════════════
       ORDERS
       ══════════════════════════════════════ */
-    async function renderOrders() {
+    function renderOrders() {
       const container = document.getElementById('ordersContainer');
       if (!container) return;
-      const orders = (typeof getOrders === 'function') ? await getOrders() : [];
+      const orders = (typeof getOrders === 'function') ? getOrders() : [];
 
       if (!orders.length) {
         container.innerHTML = '<p style="color:var(--text3);text-align:center;padding:40px">אין הזמנות שמורות עדיין.</p>';
@@ -807,86 +774,273 @@
       if (sessionStorage.getItem('ginoAdmin') === '1') initAdmin();
     });
 
-    async function addNewCoupon() {
-      const code = document.getElementById('couponCode').value.trim().toUpperCase();
-      const discount = parseFloat(document.getElementById('couponDiscount').value) || 0;
-      const expiry = document.getElementById('couponExpiry').value;
-      const freeShipping = document.getElementById('couponFreeShipping').checked;
 
-      if (!code) {
-        alert('חסר קוד קופון');
-        return;
+    // --- הוסף את הקוד הזה בתוך ה-Script בטאב ההזמנות ---
+
+  function renderOrders() {
+      const container = document.getElementById('ordersContainer');
+      const searchVal = document.getElementById('orderSearchInput')?.value.toLowerCase() || "";
+      if (!container) return;
+      
+      let orders = (typeof getOrders === 'function') ? getOrders() : [];
+
+      // פילטר חיפוש
+      if (searchVal) {
+          orders = orders.filter(o => 
+              o.orderId.toLowerCase().includes(searchVal) || 
+              o.fullname.toLowerCase().includes(searchVal) ||
+              o.phone.includes(searchVal)
+          );
       }
 
-      const coupons = JSON.parse(localStorage.getItem('ginoCoupons') || '[]');
-
-      if (coupons.find(c => c.code === code)) {
-        alert('קופון כבר קיים');
-        return;
+      if (!orders.length) {
+          container.innerHTML = '<p style="color:var(--text3);text-align:center;padding:40px">לא נמצאו הזמנות תואמות.</p>';
+          return;
       }
 
-      coupons.push({
-        code,
-        discount,
-        expiryDate: expiry || null,
-        freeShipping
+      container.innerHTML = '';
+      // הצגת ההזמנות מהחדשה ביותר לישנה
+      orders.reverse().forEach(order => {
+          // ... (הקוד הקיים של יצירת ה-card)
       });
+  }
 
-      localStorage.setItem('ginoCoupons', JSON.stringify(coupons));
 
-      document.getElementById('couponCode').value = '';
-      document.getElementById('couponDiscount').value = '';
-      document.getElementById('couponExpiry').value = '';
-      document.getElementById('couponFreeShipping').checked = false;
 
-      renderCoupons();
-      showToast('קופון נוצר בהצלחה');
-    }
+  function addNewCoupon() {
+    const code = document.getElementById('couponCode').value.trim();
+    const discount = parseFloat(document.getElementById('couponDiscount').value) || 0;
+    const freeShipping = document.getElementById('couponFreeShipping').checked;
 
-    function renderCoupons() {
-      const box = document.getElementById('couponsList');
-      if (!box) return;
+    if (!code) return alert('חסר קוד קופון');
 
-      const coupons = JSON.parse(localStorage.getItem('ginoCoupons') || '[]');
-      if (coupons.length === 0) {
-        box.innerHTML = '<p style="color:var(--text3); font-size:0.9rem;">אין קופונים פעילים</p>';
-        return;
-      }
+    const coupons = JSON.parse(localStorage.getItem('ginoCoupons') || '[]');
 
-      box.innerHTML = coupons.map((c, i) => `
-        <div style="background:#1a1a1a;padding:10px;border-radius:8px;margin-top:8px;border:1px solid rgba(212,175,55,0.2)">
-          <b>${c.code}</b> | ${c.discount}% הנחה
+    coupons.push({
+      code,
+      discount,
+      freeShipping
+    });
+
+    localStorage.setItem('ginoCoupons', JSON.stringify(coupons));
+
+    document.getElementById('couponCode').value = '';
+    document.getElementById('couponDiscount').value = '';
+    document.getElementById('couponFreeShipping').checked = false;
+
+    renderCoupons();
+  }
+
+function renderCoupons() {
+  const box = document.getElementById('couponsList');
+  const coupons = JSON.parse(localStorage.getItem('ginoCoupons') || '[]');
+
+  if (coupons.length === 0) {
+    box.innerHTML = '<p style="color:var(--text3); font-size:0.9rem;">אין קופונים פעילים</p>';
+    return;
+  }
+
+  box.innerHTML = coupons.map((c, i) => {
+    // עיצוב התאריך לתצוגה
+    const dateDisplay = c.expiryDate ? `<br><span style="font-size:0.8rem; color:var(--text3)">📅 בתוקף עד: ${c.expiryDate}</span>` : '<br><span style="font-size:0.8rem; color:var(--text3)">📅 ללא הגבלת זמן</span>';
+    
+    return `
+      <div style="background:#1a1a1a; padding:12px; border-radius:8px; margin-top:8px; border:1px solid rgba(212,175,55,0.2); display:flex; justify-content:space-between; align-items:center;">
+        <div>
+          <b style="color:var(--gold)">${c.code}</b> | ${c.discount}% הנחה
           ${c.freeShipping ? ' | 🚚 משלוח חינם' : ''}
-          ${c.expiryDate ? `<br><span style="font-size:0.8rem; color:var(--text3)">📅 בתוקף עד: ${new Date(c.expiryDate).toLocaleDateString('he-IL')}</span>` : ''}
-          <button onclick="deleteCoupon(${i})"
-            style="margin-right:10px;background:red;color:#fff;border:none;padding:5px 8px;border-radius:6px;cursor:pointer">
-            מחיקה
-          </button>
+          ${dateDisplay}
         </div>
-      `).join('');
-    }
+        <button onclick="deleteCoupon(${i})"
+          style="background:rgba(192,57,43,0.2); color:var(--red); border:1px solid var(--red); padding:5px 10px; border-radius:6px; cursor:pointer; font-size:0.8rem;">
+          מחיקה
+        </button>
+      </div>
+    `;
+  }).join('');
+}
 
-    function deleteCoupon(index) {
-      if (!confirm('האם למחוק קופון זה?')) return;
-      const coupons = JSON.parse(localStorage.getItem('ginoCoupons') || '[]');
-      coupons.splice(index, 1);
-      localStorage.setItem('ginoCoupons', JSON.stringify(coupons));
-      renderCoupons();
-      showToast('קופון נמחק');
-    }
 
-    async function setAllProductsActive() {
-      if (!confirm('האם להפוך את כל המוצרים באתר לפעילים במלאי?')) return;
-      const prods = await getProducts();
-      prods.forEach(p => {
+  function addNewCoupon() {
+  const code = document.getElementById('couponCode').value.trim();
+  const discount = parseFloat(document.getElementById('couponDiscount').value) || 0;
+  const freeShipping = document.getElementById('couponFreeShipping').checked;
+
+  if (!code) return alert('חסר קוד קופון');
+
+  const coupons = JSON.parse(localStorage.getItem('ginoCoupons') || '[]');
+
+  if (coupons.find(c => c.code === code)) {
+    return alert('קופון כבר קיים');
+  }
+
+  coupons.push({ code, discount, freeShipping });
+
+  localStorage.setItem('ginoCoupons', JSON.stringify(coupons));
+
+  document.getElementById('couponCode').value = '';
+  document.getElementById('couponDiscount').value = '';
+  document.getElementById('couponFreeShipping').checked = false;
+
+  renderCoupons();
+  showToast('קופון נוצר');
+}
+
+function renderCoupons() {
+  const box = document.getElementById('couponsList');
+  const coupons = JSON.parse(localStorage.getItem('ginoCoupons') || '[]');
+
+  box.innerHTML = coupons.map((c, i) => `
+    <div style="background:#1a1a1a;padding:10px;border-radius:8px;margin-top:8px;border:1px solid rgba(212,175,55,0.2)">
+      <b>${c.code}</b> | ${c.discount}% הנחה
+      ${c.freeShipping ? ' | 🚚 משלוח חינם' : ''}
+
+      <button onclick="deleteCoupon(${i})"
+        style="margin-right:10px;background:red;color:#fff;border:none;padding:5px 8px;border-radius:6px;cursor:pointer">
+        מחיקה
+      </button>
+    </div>
+  `).join('');
+}
+function deleteCoupon(index) {
+  const coupons = JSON.parse(localStorage.getItem('ginoCoupons') || '[]');
+
+  coupons.splice(index, 1);
+
+  localStorage.setItem('ginoCoupons', JSON.stringify(coupons));
+
+  renderCoupons();
+  showToast('קופון נמחק');
+}
+window.addEventListener('DOMContentLoaded', () => {
+  renderCoupons();
+});
+
+
+function addNewCoupon() {
+  const code = document.getElementById('couponCode').value.trim().toUpperCase();
+  const discount = parseFloat(document.getElementById('couponDiscount').value) || 0;
+  const expiry = document.getElementById('couponExpiry').value; // שורת התאריך החדשה
+  const freeShipping = document.getElementById('couponFreeShipping').checked;
+
+  if (!code) return alert('חסר קוד קופון');
+
+  const coupons = JSON.parse(localStorage.getItem('ginoCoupons') || '[]');
+
+  if (coupons.find(c => c.code === code)) {
+    return alert('קופון כבר קיים');
+  }
+
+  // שומרים גם את ה-expiryDate
+  coupons.push({ 
+    code, 
+    discount, 
+    freeShipping, 
+    expiryDate: expiry 
+  });
+
+  localStorage.setItem('ginoCoupons', JSON.stringify(coupons));
+
+  // ניקוי הטופס
+  document.getElementById('couponCode').value = '';
+  document.getElementById('couponDiscount').value = '';
+  document.getElementById('couponExpiry').value = '';
+  document.getElementById('couponFreeShipping').checked = false;
+
+  renderCoupons();
+  showToast('קופון נוצר בהצלחה');
+}
+
+function setAllProductsActive() {
+    // 1. בקשת אישור מהמשתמש כדי למנוע טעויות
+    if (!confirm('האם להפוך את כל המוצרים באתר לפעילים במלאי?')) return;
+
+    // 2. משיכת כל המוצרים מהזיכרון
+    const prods = getProducts();
+
+    // 3. עדכון כל מוצר למצב פעיל
+    prods.forEach(p => {
         p.isActive = true;
-      });
-      await saveProducts(prods);
-      await renderProductsTable();
-      showToast('כל המוצרים עודכנו כפעילים במלאי!');
-    }
+    });
+
+    // 4. שמירה חזרה ל-localStorage
+    saveProducts(prods);
+
+    // 5. רענון הטבלה והצגת הודעת אישור
+    renderProductsTable();
+    showToast('כל המוצרים עודכנו כפעילים במלאי!');
+}
 
   </script>
+
+<!-- Add this script tag -->
+<script type="module">
+  import { initializeApp } from 'https://www.gstatic.com/firebasejs/9.22.0/firebase-app.js';
+  import { getFirestore, doc, setDoc, getDoc, collection, addDoc, getDocs, updateDoc, deleteDoc } from 'https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore.js';
+
+  const firebaseConfig = {
+    apiKey: "YOUR_API_KEY",
+    authDomain: "YOUR_PROJECT.firebaseapp.com",
+    projectId: "YOUR_PROJECT_ID",
+    storageBucket: "YOUR_PROJECT.appspot.com",
+    messagingSenderId: "YOUR_SENDER_ID",
+    appId: "YOUR_APP_ID"
+  };
+
+  const app = initializeApp(firebaseConfig);
+  const db = getFirestore(app);
+
+  // Make db global for use in other scripts
+  window.db = db;
+
+
+
+// Replace getProducts, saveProducts, etc.
+// Example: Products
+async function getProducts() {
+  const querySnapshot = await getDocs(collection(window.db, 'products'));
+  return querySnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+}
+
+async function saveProducts(products) {
+  // Clear and re-save all products
+  const batch = writeBatch(window.db);
+  const querySnapshot = await getDocs(collection(window.db, 'products'));
+  querySnapshot.forEach(doc => batch.delete(doc.ref));
+  products.forEach(product => {
+    const docRef = doc(collection(window.db, 'products'));
+    batch.set(docRef, product);
+  });
+  await batch.commit();
+}
+
+// For settings
+async function getSettings() {
+  const docSnap = await getDoc(doc(window.db, 'settings', 'global'));
+  return docSnap.exists() ? docSnap.data() : {};
+}
+
+async function saveSettings(settings) {
+  await setDoc(doc(window.db, 'settings', 'global'), settings);
+}
+
+// For coupons
+async function getCoupons() {
+  const querySnapshot = await getDocs(collection(window.db, 'coupons'));
+  return querySnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+}
+
+async function saveCoupons(coupons) {
+  // Similar batch update as products
+}
+
+// Update renderCoupons, addNewCoupon, etc., to use getCoupons() and saveCoupons()
+
+
+
+
+
+</script>
 
   </body>
   </html>
