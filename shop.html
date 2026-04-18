@@ -1,0 +1,1646 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <title>חנות | GINO VINO</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="GINO VINO – חנות אלכוהול פרימיום. יינות, ויסקי, ג׳ין, בירות, טקילה ועוד.">
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,400&family=Assistant:wght@300;400;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+
+  <style>
+  /* ══════════════════════════════════════════════════
+     RESET & VARIABLES
+  ══════════════════════════════════════════════════ */
+  *, *::before, *::after { margin:0; padding:0; box-sizing:border-box; }
+
+  :root {
+    --bg:        #080604;
+    --bg2:       #0e0b07;
+    --bg3:       #161209;
+    --bg4:       #1d1810;
+    --bg5:       #241f16;
+    --gold:      #c9a84c;
+    --gold2:     #e0c06a;
+    --gold3:     #8a6820;
+    --gold-glow: rgba(201,168,76,0.18);
+    --cream:     #f2ead8;
+    --text:      #e4d8c0;
+    --text2:     #9a8868;
+    --text3:     #5a4e38;
+    --red:       #c0392b;
+    --green:     #27ae60;
+    --border:    rgba(201,168,76,0.15);
+    --border2:   rgba(201,168,76,0.07);
+    --shadow:    0 4px 32px rgba(0,0,0,0.6);
+    --r:         10px;
+    --r2:        16px;
+    --t:         0.32s cubic-bezier(0.4,0,0.2,1);
+  }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Assistant', sans-serif;
+    line-height: 1.6;
+    direction: rtl;
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+
+  ::-webkit-scrollbar { width: 5px; }
+  ::-webkit-scrollbar-track { background: var(--bg); }
+  ::-webkit-scrollbar-thumb { background: var(--gold3); border-radius: 3px; }
+
+  a { text-decoration: none; color: inherit; }
+  button { cursor: pointer; font-family: 'Assistant', sans-serif; }
+  img { max-width: 100%; display: block; }
+
+  /* ══════════════════════════════════════════════════
+     AGE GATE
+  ══════════════════════════════════════════════════ */
+  #ageGate {
+    position: fixed; inset: 0; z-index: 10000;
+    background: radial-gradient(ellipse at 50% 30%, #1a1408 0%, #000 80%);
+    display: flex; align-items: center; justify-content: center;
+    padding: 20px;
+  }
+  #ageGate.gone { display: none; }
+
+  .age-wrap {
+    background: var(--bg3);
+    border: 1px solid rgba(201,168,76,0.3);
+    border-radius: 24px;
+    padding: 64px 52px;
+    max-width: 480px; width: 100%;
+    text-align: center;
+    box-shadow: 0 0 80px rgba(201,168,76,0.08);
+    animation: ageIn 0.6s ease both;
+  }
+  @keyframes ageIn {
+    from { opacity:0; transform: scale(0.94) translateY(20px); }
+    to   { opacity:1; transform: scale(1) translateY(0); }
+  }
+
+  .age-logo {
+    font-family: 'Playfair Display', serif;
+    font-size: 2.8rem; font-weight: 900; letter-spacing: 5px; color: var(--gold);
+    margin-bottom: 4px;
+  }
+  .age-tagline { color: var(--text2); font-size: 0.9rem; letter-spacing: 2px; margin-bottom: 40px; }
+  .age-icon { font-size: 3rem; color: var(--gold); margin-bottom: 20px; opacity: 0.8; }
+  .age-q {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.8rem; color: var(--cream); margin-bottom: 8px; font-style: italic;
+  }
+  .age-note { color: var(--text2); font-size: 0.88rem; margin-bottom: 40px; line-height: 1.7; }
+  .age-btns { display: flex; gap: 14px; justify-content: center; }
+  .age-yes {
+    background: linear-gradient(135deg, var(--gold), var(--gold2));
+    color: #000; border: none;
+    padding: 14px 44px; border-radius: 50px;
+    font-size: 1rem; font-weight: 700;
+    transition: all var(--t);
+    box-shadow: 0 6px 24px rgba(201,168,76,0.3);
+  }
+  .age-yes:hover { transform: translateY(-3px); box-shadow: 0 10px 32px rgba(201,168,76,0.5); }
+  .age-no {
+    background: transparent; color: var(--text2);
+    border: 1px solid var(--text3);
+    padding: 13px 36px; border-radius: 50px;
+    font-size: 1rem; font-weight: 600;
+    transition: all var(--t);
+  }
+  .age-no:hover { border-color: var(--red); color: var(--red); }
+  .age-law { margin-top: 28px; color: var(--text3); font-size: 0.76rem; }
+
+  /* ══════════════════════════════════════════════════
+     HEADER
+  ══════════════════════════════════════════════════ */
+  .hdr {
+    position: sticky; top: 0; z-index: 900;
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 0 32px; height: 68px;
+    background: rgba(8,6,4,0.92); backdrop-filter: blur(20px);
+    border-bottom: 1px solid var(--border2);
+  }
+
+  .hdr-logo {
+    display: flex; align-items: center; gap: 10px;
+    font-family: 'Playfair Display', serif;
+    font-size: 1.5rem; font-weight: 900; letter-spacing: 3px; color: var(--gold);
+  }
+  .hdr-logo i { font-size: 1.4rem; }
+
+  .hdr-nav { display: flex; gap: 2px; }
+  .hdr-nav a {
+    color: var(--text2); font-weight: 600; font-size: 0.88rem;
+    padding: 7px 12px; border-radius: 8px; transition: all var(--t);
+  }
+  .hdr-nav a:hover, .hdr-nav a.active { color: var(--gold); background: var(--gold-glow); }
+
+  .hdr-right { display: flex; align-items: center; gap: 10px; }
+
+  .cart-trigger {
+    display: flex; align-items: center; gap: 8px;
+    background: var(--bg3); border: 1px solid var(--border);
+    padding: 8px 18px; border-radius: 50px;
+    color: var(--text); font-size: 0.9rem; font-weight: 700;
+    transition: all var(--t); position: relative;
+  }
+  .cart-trigger:hover { border-color: var(--gold); color: var(--gold); }
+  .cart-badge {
+    background: var(--gold); color: #000;
+    font-size: 0.68rem; font-weight: 800;
+    min-width: 20px; height: 20px; border-radius: 50%;
+    display: inline-flex; align-items: center; justify-content: center;
+    padding: 0 4px;
+  }
+
+  .hmbgr {
+    display: none; flex-direction: column; gap: 6px;
+    cursor: pointer; padding: 6px; margin-right: 10px;
+  }
+  .hmbgr span { 
+    display:block; width:28px; height:3px; 
+    background:var(--gold); border-radius:2px; transition: 0.3s;
+  }
+
+  #mobNav {
+    display: none; flex-direction: column;
+    background: var(--bg2); border-bottom: 1px solid var(--border);
+    position: absolute; top: 68px; left: 0; width: 100%; z-index: 899;
+    box-shadow: 0 10px 20px rgba(0,0,0,0.5);
+  }
+  #mobNav.open { display: flex; animation: slideDownNav 0.3s ease; }
+  
+  @keyframes slideDownNav {
+    from { opacity: 0; transform: translateY(-10px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  #mobNav a {
+    padding: 15px 28px; color: var(--cream); font-weight: 600; font-size: 1.1rem;
+    border-bottom: 1px solid var(--border2); transition: color var(--t), background var(--t);
+  }
+  #mobNav a:hover { color: var(--gold); background: var(--bg3); }
+
+  /* ══════════════════════════════════════════════════
+     SHOP HERO BAND
+  ══════════════════════════════════════════════════ */
+  .shop-hero {
+    background: linear-gradient(135deg, var(--bg2) 0%, var(--bg3) 60%, var(--bg4) 100%);
+    border-bottom: 1px solid var(--border);
+    padding: 48px 32px 40px;
+    position: relative; overflow: hidden;
+  }
+  .shop-hero::before {
+    content: '';
+    position: absolute; top: -60px; left: -60px;
+    width: 340px; height: 340px;
+    background: radial-gradient(circle, rgba(201,168,76,0.08) 0%, transparent 70%);
+    pointer-events: none;
+  }
+  .shop-hero-inner { max-width: 1400px; margin: 0 auto; position: relative; z-index: 1; }
+  .shop-hero h1 {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(2rem,4vw,3.2rem); color: var(--cream); margin-bottom: 8px;
+  }
+  .shop-hero h1 span { color: var(--gold); }
+  .shop-hero p { color: var(--text2); font-size: 0.98rem; max-width: 520px; }
+
+  /* ══════════════════════════════════════════════════
+     TOOLBAR
+  ══════════════════════════════════════════════════ */
+  .toolbar {
+    background: var(--bg2); border-bottom: 1px solid var(--border2);
+    padding: 16px 32px; position: sticky; top: 68px; z-index: 800;
+  }
+  .toolbar-inner {
+    max-width: 1400px; margin: 0 auto;
+    display: flex; align-items: center; gap: 12px; flex-wrap: wrap;
+  }
+
+  .search-wrap {
+    flex: 1; min-width: 200px; max-width: 360px;
+    display: flex; align-items: center; gap: 0;
+    background: var(--bg3); border: 1px solid var(--border);
+    border-radius: 50px; overflow: hidden; transition: border-color var(--t);
+  }
+  .search-wrap:focus-within { border-color: var(--gold); }
+  .search-wrap i { padding: 0 14px; color: var(--text3); font-size: 0.9rem; }
+  .search-wrap input {
+    flex: 1; background: transparent; border: none; outline: none;
+    color: var(--text); font-family: 'Assistant', sans-serif; font-size: 0.92rem;
+    padding: 10px 0 10px 14px; direction: rtl;
+  }
+  .search-wrap input::placeholder { color: var(--text3); }
+
+  .sort-select {
+    background: var(--bg3); border: 1px solid var(--border);
+    color: var(--text); padding: 10px 14px; border-radius: 50px;
+    font-family: 'Assistant', sans-serif; font-size: 0.88rem;
+    cursor: pointer; outline: none; transition: border-color var(--t);
+  }
+  .sort-select:focus { border-color: var(--gold); }
+  .sort-select option { background: var(--bg3); }
+
+  .filter-toggle-btn {
+    display: flex; align-items: center; gap: 8px;
+    background: var(--bg3); border: 1px solid var(--border);
+    color: var(--text); padding: 10px 18px; border-radius: 50px;
+    font-size: 0.88rem; font-weight: 600; transition: all var(--t);
+  }
+  .filter-toggle-btn:hover { border-color: var(--gold); color: var(--gold); }
+  .filter-toggle-btn.active { background: var(--gold-glow); border-color: var(--gold); color: var(--gold); }
+
+  .products-count {
+    color: var(--text3); font-size: 0.82rem; margin-right: auto;
+    white-space: nowrap;
+  }
+
+  /* ══════════════════════════════════════════════════
+     CATEGORY PILLS
+  ══════════════════════════════════════════════════ */
+  .cat-bar {
+    background: var(--bg2); border-bottom: 1px solid var(--border2);
+    padding: 12px 32px; overflow-x: auto;
+    scrollbar-width: none; -ms-overflow-style: none;
+  }
+  .cat-bar::-webkit-scrollbar { display: none; }
+  .cat-bar-inner { max-width:1400px; margin:0 auto; display:flex; gap:8px; width:max-content; }
+
+  .cat-pill {
+    background: transparent; border: 1px solid var(--border);
+    color: var(--text2); padding: 7px 18px; border-radius: 50px;
+    font-family: 'Assistant', sans-serif; font-size: 0.85rem; font-weight: 600;
+    white-space: nowrap; transition: all var(--t);
+    display: flex; align-items: center; gap: 7px;
+  }
+  .cat-pill:hover { border-color: rgba(201,168,76,0.4); color: var(--text); }
+  .cat-pill.active { background: var(--gold); border-color: var(--gold); color: #000; }
+  .cat-pill .pill-count {
+    background: rgba(0,0,0,0.2); color: inherit;
+    font-size: 0.72rem; font-weight: 800;
+    padding: 1px 7px; border-radius: 50px;
+  }
+  .cat-pill.active .pill-count { background: rgba(0,0,0,0.25); }
+
+  /* ══════════════════════════════════════════════════
+     SIDEBAR FILTERS
+  ══════════════════════════════════════════════════ */
+  .shop-body { max-width: 1400px; margin: 0 auto; padding: 28px 32px; }
+
+  .sidebar-panel {
+    background: var(--bg3); border: 1px solid var(--border);
+    border-radius: var(--r2); padding: 28px; margin-bottom: 24px;
+    display: none;
+    animation: slideDown 0.3s ease;
+  }
+  .sidebar-panel.open { display: block; }
+  @keyframes slideDown {
+    from { opacity:0; transform:translateY(-10px); }
+    to   { opacity:1; transform:translateY(0); }
+  }
+  .filter-section { margin-bottom: 28px; }
+  .filter-section:last-child { margin-bottom: 0; }
+  .filter-section h4 { color: var(--gold); font-size: 0.82rem; letter-spacing: 2px; text-transform: uppercase; margin-bottom: 14px; font-family: 'Assistant', sans-serif; }
+
+  .price-range { display: flex; align-items: center; gap: 14px; }
+  .price-range input[type=range] {
+    flex: 1; accent-color: var(--gold); cursor: pointer;
+  }
+  .price-vals { display: flex; justify-content: space-between; font-size: 0.82rem; color: var(--text2); margin-top: 8px; }
+
+  .alc-btns { display: flex; gap: 8px; flex-wrap: wrap; }
+  .alc-btn {
+    background: var(--bg4); border: 1px solid var(--border);
+    color: var(--text2); padding: 5px 14px; border-radius: 50px;
+    font-size: 0.8rem; font-weight: 600; transition: all var(--t);
+  }
+  .alc-btn:hover { border-color: var(--gold); color: var(--gold); }
+  .alc-btn.active { background: var(--gold-glow); border-color: var(--gold); color: var(--gold); }
+
+  .toggle-row { display: flex; align-items: center; justify-content: space-between; margin-bottom: 12px; }
+  .toggle-row label { color: var(--text2); font-size: 0.9rem; cursor: pointer; }
+  .toggle-row input[type=checkbox] { accent-color: var(--gold); width: 16px; height: 16px; cursor: pointer; }
+
+  /* ══════════════════════════════════════════════════
+     PRODUCTS GRID
+  ══════════════════════════════════════════════════ */
+  .products-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(230px, 1fr));
+    gap: 20px;
+  }
+
+  /* PRODUCT CARD */
+  .pcard {
+    background: var(--bg3);
+    border: 1px solid var(--border2);
+    border-radius: var(--r2);
+    overflow: hidden;
+    transition: all var(--t);
+    position: relative;
+    display: flex; flex-direction: column;
+  }
+  .pcard:hover {
+    border-color: rgba(201,168,76,0.3);
+    transform: translateY(-5px);
+    box-shadow: 0 16px 40px rgba(0,0,0,0.5), 0 0 0 1px rgba(201,168,76,0.08);
+  }
+
+  .pcard-img {
+    position: relative; height: 200px; overflow: hidden;
+    background: var(--bg4);
+    display: flex; align-items: center; justify-content: center;
+  }
+  .pcard-img img {
+    width: 100%; height: 100%; object-fit: cover;
+    transition: transform 0.5s ease;
+  }
+  .pcard:hover .pcard-img img { transform: scale(1.06); }
+
+  .pcard-img .img-fallback {
+    display: flex; flex-direction: column; align-items: center; justify-content: center;
+    width: 100%; height: 100%; gap: 8px;
+  }
+  .pcard-img .img-fallback i { font-size: 3rem; color: var(--gold); opacity: 0.4; }
+  .pcard-img .img-fallback span { color: var(--text3); font-size: 0.75rem; }
+
+  .badge-sale {
+    position: absolute; top: 12px; right: 12px; z-index: 2;
+    background: var(--gold); color: #000;
+    font-size: 0.7rem; font-weight: 800; padding: 3px 10px; border-radius: 50px;
+    letter-spacing: 0.5px;
+  }
+  .badge-out {
+    position: absolute; inset: 0; background: rgba(0,0,0,0.7);
+    display: flex; align-items: center; justify-content: center; z-index: 3;
+  }
+  .badge-out span {
+    background: var(--red); color: #fff;
+    font-size: 0.82rem; font-weight: 700; padding: 7px 18px; border-radius: 50px;
+  }
+
+  .wishlist-btn {
+    position: absolute; top: 12px; left: 12px; z-index: 4;
+    background: rgba(0,0,0,0.5); border: none;
+    color: var(--text2); width: 34px; height: 34px; border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 0.85rem; transition: all var(--t); opacity: 0;
+  }
+  .pcard:hover .wishlist-btn { opacity: 1; }
+  .wishlist-btn:hover { background: rgba(192,57,43,0.8); color: #fff; }
+  .wishlist-btn.loved { opacity: 1; background: rgba(192,57,43,0.85); color: #fff; }
+
+  .pcard-body { padding: 18px 18px 14px; flex: 1; display: flex; flex-direction: column; }
+  .pcard-cat { font-size: 0.72rem; color: var(--text3); letter-spacing: 1.5px; text-transform: uppercase; margin-bottom: 7px; }
+  .pcard-name {
+    font-size: 0.96rem; font-weight: 700; color: var(--cream);
+    margin-bottom: 8px; line-height: 1.35;
+    display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;
+  }
+
+  /* ── תיאור מוצר (חדש — לא נוגע בשום קיים) ── */
+  .pcard-desc {
+    font-size: 0.76rem; color: var(--text2); font-style: italic;
+    line-height: 1.45; margin-bottom: 6px;
+    display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;
+  }
+
+  .pcard-alc { font-size: 0.78rem; color: var(--text3); margin-bottom: 12px; }
+
+  .pcard-price { display: flex; align-items: center; gap: 10px; margin-bottom: 14px; }
+  .price-main { font-size: 1.3rem; font-weight: 800; color: var(--gold); }
+  .price-orig { font-size: 0.88rem; color: var(--text3); text-decoration: line-through; }
+
+  .pcard-footer { padding: 0 18px 18px; margin-top: auto; }
+  .qty-add {
+    display: flex; align-items: center; gap: 8px;
+    background: var(--bg4); border: 1px solid var(--border);
+    border-radius: var(--r); overflow: hidden;
+  }
+  .qty-btn {
+    background: transparent; border: none; color: var(--text2);
+    width: 36px; height: 40px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 1rem; font-weight: 700; transition: all var(--t);
+  }
+  .qty-btn:hover { color: var(--gold); background: var(--gold-glow); }
+  .qty-val { flex: 1; text-align: center; font-size: 0.9rem; font-weight: 700; color: var(--text); }
+  .add-btn {
+    flex: 1; background: var(--gold); color: #000; border: none;
+    height: 40px; border-radius: 0 var(--r) var(--r) 0;
+    font-size: 0.85rem; font-weight: 700; transition: all var(--t);
+    display: flex; align-items: center; justify-content: center; gap: 6px;
+  }
+  .add-btn:hover { background: var(--gold2); }
+  .add-btn:disabled { background: var(--bg5); color: var(--text3); cursor: not-allowed; }
+
+  .out-label { text-align: center; color: var(--text3); font-size: 0.82rem; padding: 10px 0; }
+
+  .empty-state {
+    grid-column: 1 / -1; text-align: center; padding: 80px 20px;
+    color: var(--text2);
+  }
+  .empty-state i { font-size: 4rem; color: var(--text3); margin-bottom: 18px; display: block; }
+  .empty-state h3 { font-size: 1.4rem; margin-bottom: 8px; color: var(--text); }
+
+  /* ══════════════════════════════════════════════════
+     CART DRAWER
+  ══════════════════════════════════════════════════ */
+  .cart-overlay {
+    position: fixed; inset: 0; background: rgba(0,0,0,0.7);
+    z-index: 2000; opacity: 0; pointer-events: none; transition: opacity var(--t);
+  }
+  .cart-overlay.open { opacity: 1; pointer-events: all; }
+
+  .cart-drawer {
+    position: fixed; top: 0; left: 0; bottom: 0; width: 420px; max-width: 100vw;
+    background: var(--bg2); border-right: 1px solid var(--border);
+    z-index: 2001;
+    display: flex; flex-direction: column;
+    transform: translateX(-100%); transition: transform var(--t);
+  }
+  .cart-drawer.open { transform: translateX(0); }
+
+  .cart-hdr {
+    padding: 22px 24px; border-bottom: 1px solid var(--border);
+    display: flex; align-items: center; justify-content: space-between;
+  }
+  .cart-hdr h2 {
+    font-family: 'Playfair Display', serif; font-size: 1.4rem; color: var(--gold);
+    display: flex; align-items: center; gap: 10px;
+  }
+  .cart-close-btn {
+    background: var(--bg3); border: 1px solid var(--border);
+    color: var(--text2); width: 36px; height: 36px; border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 0.9rem; transition: all var(--t);
+  }
+  .cart-close-btn:hover { color: var(--gold); border-color: var(--gold); }
+
+  .cart-body { flex: 1; overflow-y: auto; padding: 20px 24px; }
+  .cart-body::-webkit-scrollbar { width: 3px; }
+  .cart-body::-webkit-scrollbar-thumb { background: var(--gold3); }
+
+  .cart-empty {
+    text-align: center; padding: 60px 20px; color: var(--text2);
+  }
+  .cart-empty i { font-size: 3.5rem; color: var(--text3); margin-bottom: 14px; display: block; }
+  .cart-empty p { font-size: 1rem; margin-bottom: 20px; }
+
+  .cart-item {
+    display: flex; gap: 14px; align-items: center;
+    padding: 14px 0; border-bottom: 1px solid var(--border2);
+  }
+  .cart-item:last-child { border-bottom: none; }
+  .ci-img {
+    width: 56px; height: 56px; border-radius: 8px;
+    background: var(--bg4); border: 1px solid var(--border);
+    display: flex; align-items: center; justify-content: center;
+    overflow: hidden; flex-shrink: 0;
+  }
+  .ci-img img { width: 100%; height: 100%; object-fit: cover; }
+  .ci-img i { color: var(--gold); opacity: 0.5; font-size: 1.4rem; }
+  .ci-info { flex: 1; min-width: 0; }
+  .ci-name { font-size: 0.88rem; font-weight: 700; color: var(--cream); margin-bottom: 3px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .ci-cat { font-size: 0.75rem; color: var(--text3); margin-bottom: 6px; }
+  .ci-price { font-size: 0.92rem; font-weight: 800; color: var(--gold); }
+  .ci-controls { display: flex; align-items: center; gap: 6px; }
+  .ci-btn {
+    background: var(--bg4); border: 1px solid var(--border);
+    color: var(--text2); width: 28px; height: 28px; border-radius: 6px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 0.9rem; transition: all var(--t);
+  }
+  .ci-btn:hover { border-color: var(--gold); color: var(--gold); }
+  .ci-qty { font-size: 0.9rem; font-weight: 700; color: var(--text); min-width: 18px; text-align: center; }
+  .ci-del {
+    background: none; border: none; color: var(--text3); font-size: 0.88rem;
+    padding: 4px 7px; border-radius: 6px; transition: all var(--t);
+  }
+  .ci-del:hover { color: var(--red); background: rgba(192,57,43,0.1); }
+
+  .cart-footer {
+    padding: 20px 24px; border-top: 1px solid var(--border);
+    background: var(--bg3);
+  }
+
+  .coupon-row {
+    display: flex; gap: 8px; margin-bottom: 18px;
+  }
+  .coupon-row input {
+    flex: 1; background: var(--bg4); border: 1px solid var(--border);
+    border-radius: var(--r); color: var(--text); padding: 9px 12px;
+    font-family: 'Assistant', sans-serif; font-size: 0.88rem; outline: none;
+    transition: border-color var(--t);
+  }
+  .coupon-row input:focus { border-color: var(--gold); }
+  .coupon-apply-btn {
+    background: var(--bg4); border: 1px solid var(--border);
+    color: var(--text); padding: 9px 16px; border-radius: var(--r);
+    font-size: 0.85rem; font-weight: 700; transition: all var(--t);
+  }
+  .coupon-apply-btn:hover { border-color: var(--gold); color: var(--gold); }
+  .coupon-msg { font-size: 0.8rem; margin-bottom: 12px; min-height: 18px; }
+  .coupon-msg.ok { color: var(--green); }
+  .coupon-msg.err { color: var(--red); }
+
+  .delivery-opts { display: flex; gap: 8px; margin-bottom: 18px; }
+  .del-opt {
+    flex: 1; background: var(--bg4); border: 1px solid var(--border);
+    border-radius: var(--r); padding: 10px 12px; cursor: pointer;
+    text-align: center; transition: all var(--t);
+    display: flex; flex-direction: column; align-items: center; gap: 4px;
+  }
+  .del-opt.active { border-color: var(--gold); background: var(--gold-glow); }
+  .del-opt i { font-size: 1.1rem; color: var(--gold); }
+  .del-opt span { font-size: 0.8rem; font-weight: 700; color: var(--text); }
+  .del-opt small { font-size: 0.72rem; color: var(--text3); }
+
+  .cart-totals { margin-bottom: 18px; }
+  .total-row {
+    display: flex; justify-content: space-between;
+    font-size: 0.88rem; color: var(--text2); padding: 5px 0;
+  }
+  .total-row.grand {
+    font-size: 1.2rem; font-weight: 800; color: var(--gold);
+    border-top: 1px solid var(--border); margin-top: 10px; padding-top: 12px;
+  }
+  .total-row.discount { color: var(--green); }
+
+  .checkout-btn {
+    width: 100%; background: linear-gradient(135deg, var(--gold), var(--gold2));
+    color: #000; border: none; padding: 15px;
+    border-radius: 50px; font-size: 1rem; font-weight: 700;
+    transition: all var(--t);
+    box-shadow: 0 6px 24px rgba(201,168,76,0.3);
+  }
+  .checkout-btn:hover { transform: translateY(-2px); box-shadow: 0 10px 32px rgba(201,168,76,0.5); }
+  .checkout-btn:disabled { background: var(--bg5); color: var(--text3); cursor: not-allowed; transform: none; box-shadow: none; }
+
+  .clear-cart-btn {
+    width: 100%; background: transparent; border: 1px solid var(--border);
+    color: var(--text2); padding: 10px; border-radius: 50px;
+    font-size: 0.82rem; font-weight: 600; margin-top: 8px; transition: all var(--t);
+  }
+  .clear-cart-btn:hover { border-color: var(--red); color: var(--red); }
+
+  /* ══════════════════════════════════════════════════
+     TOAST / POPUP
+  ══════════════════════════════════════════════════ */
+  .toast {
+    position: fixed; bottom: 28px; right: 28px; z-index: 5000;
+    background: var(--bg3); border: 1px solid var(--border);
+    border-radius: var(--r2); padding: 16px 20px;
+    display: flex; align-items: center; gap: 12px;
+    box-shadow: var(--shadow); opacity: 0;
+    transform: translateY(16px); transition: all 0.36s ease; pointer-events: none;
+    max-width: 320px;
+  }
+  .toast.show { opacity: 1; transform: translateY(0); pointer-events: all; }
+  .toast i { color: var(--gold); font-size: 1.2rem; flex-shrink: 0; }
+  .toast-text { color: var(--text); font-size: 0.88rem; line-height: 1.4; }
+  .toast-text strong { color: var(--cream); }
+
+  /* ══════════════════════════════════════════════════
+     FLOATING BTNS
+  ══════════════════════════════════════════════════ */
+  .floats {
+    position: fixed; bottom: 28px; left: 28px;
+    display: flex; flex-direction: column; gap: 10px; z-index: 800;
+  }
+  .float-btn {
+    width: 50px; height: 50px; border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 1.3rem; color: #fff; transition: all var(--t);
+    box-shadow: 0 4px 16px rgba(0,0,0,0.5);
+  }
+  .float-btn:hover { transform: scale(1.1); }
+  .float-wa { background: #25d366; }
+  .float-ph { background: var(--gold); color: #000; }
+
+  /* ══════════════════════════════════════════════════
+     FOOTER
+  ══════════════════════════════════════════════════ */
+  footer {
+    background: var(--bg2); border-top: 1px solid var(--border);
+    padding: 32px; text-align: center; margin-top: 60px;
+  }
+  footer p { color: var(--text3); font-size: 0.82rem; margin-bottom: 6px; }
+  .f-links { display: flex; gap: 20px; justify-content: center; flex-wrap: wrap; }
+  .f-links a { color: var(--text2); font-size: 0.85rem; transition: color var(--t); }
+  .f-links a:hover { color: var(--gold); }
+
+  /* ══════════════════════════════════════════════════
+     RESPONSIVE
+  ══════════════════════════════════════════════════ */
+  @media (max-width: 768px) {
+    .hdr { padding: 0 16px; }
+    .hdr-nav { display: none; }
+    .hmbgr { display: flex; }
+    .toolbar { padding: 12px 16px; }
+    .shop-hero { padding: 32px 16px 28px; }
+    .shop-hero h1 { font-size: 2.2rem; }
+    .shop-body { padding: 20px 16px; }
+    .cat-bar { padding: 10px 16px; }
+    .age-wrap { padding: 35px 20px; width: 90%; border-radius: 16px; }
+    .age-logo { font-size: 2rem; }
+    .age-q { font-size: 1.4rem; }
+    .age-btns { flex-direction: column; gap: 12px; }
+    .age-yes, .age-no { width: 100%; padding: 12px; }
+    .age-note { margin-bottom: 25px; }
+    .products-grid { grid-template-columns: repeat(auto-fill, minmax(165px, 1fr)); gap: 14px; }
+    .pcard-img { height: 160px; }
+    .cart-drawer { width: 100vw; }
+    .cart-hdr { padding: 16px; }
+    .cart-body { padding: 16px 12px; }
+    .cart-footer { padding: 16px; }
+    .cart-item { gap: 10px; }
+    .ci-img { width: 50px; height: 50px; flex-shrink: 0; }
+    .ci-info { min-width: 0; }
+    .ci-name { white-space: normal; font-size: 0.85rem; line-height: 1.2; }
+    .ci-controls { gap: 4px; }
+    .ci-btn { width: 26px; height: 26px; font-size: 0.8rem; }
+  }
+  @media (max-width: 400px) {
+    .products-grid { grid-template-columns: 1fr 1fr; gap: 10px; }
+    .pcard-body { padding: 12px 12px 8px; }
+    .pcard-footer { padding: 0 12px 12px; }
+  }
+
+  /* ── EXTREME PREMIUM UPGRADES (SHOP) ───────────────────────── */
+
+/* 1. מסך פתיחה (Preloader) */
+#premiumPreloader {
+  position: fixed; inset: 0; z-index: 999999;
+  background: #040302;
+  display: flex; align-items: center; justify-content: center;
+  transition: opacity 1.2s cubic-bezier(0.25, 1, 0.5, 1), visibility 1.2s;
+}
+.preloader-content { text-align: center; }
+.preloader-logo {
+  font-family: 'Playfair Display', serif; font-size: 3.5rem; color: transparent;
+  -webkit-text-stroke: 1px rgba(201,168,76,0.3); letter-spacing: 12px; margin-bottom: 25px;
+  background: linear-gradient(to right, #c9a84c, #fffbdc, #c9a84c);
+  background-size: 200% auto; -webkit-background-clip: text; background-clip: text;
+  animation: fillGold 2.5s forwards ease-in-out;
+}
+.loading-line {
+  width: 0; height: 1px; background: #c9a84c; margin: 0 auto;
+  box-shadow: 0 0 10px rgba(201,168,76,0.5);
+  animation: loadLine 2s forwards cubic-bezier(0.8, 0, 0.2, 1);
+}
+@keyframes fillGold { 0% { background-position: 200% center; opacity: 0; } 100% { background-position: 0% center; opacity: 1; -webkit-text-stroke: 0px; } }
+@keyframes loadLine { 100% { width: 100%; } }
+body.loaded #premiumPreloader { opacity: 0; visibility: hidden; pointer-events: none; }
+
+/* 2. שכבת טקסטורת פילם (Film Grain) */
+.film-grain {
+  position: fixed; inset: 0; z-index: 99998; pointer-events: none;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)' opacity='0.06'/%3E%3C/svg%3E");
+  mix-blend-mode: overlay;
+}
+
+/* 3. שורת טקסט רצה (Infinite Marquee) */
+.premium-marquee {
+  background: #080604; border-top: 1px solid rgba(201,168,76,0.15); border-bottom: 1px solid rgba(201,168,76,0.15);
+  overflow: hidden; padding: 15px 0; display: flex; white-space: nowrap; position: relative; z-index: 5;
+  box-shadow: inset 0 0 30px rgba(0,0,0,0.8);
+}
+.marquee-track { display: flex; gap: 3rem; animation: scrollMarquee 35s linear infinite; }
+.marquee-track span { color: #c9a84c; font-family: 'Playfair Display', serif; font-size: 1rem; letter-spacing: 5px; opacity: 0.8; }
+@keyframes scrollMarquee { 0% { transform: translateX(0); } 100% { transform: translateX(-50%); } }
+
+/* 4. עכבר זהב (Custom Cursor) */
+.premium-cursor {
+  position: fixed; top: 0; left: 0; width: 20px; height: 20px;
+  background: transparent; border: 2px solid var(--gold); border-radius: 50%;
+  pointer-events: none; z-index: 999999; transform: translate(-50%, -50%);
+  transition: width 0.3s, height 0.3s, background-color 0.3s;
+  mix-blend-mode: difference;
+}
+.premium-cursor.hovered { width: 60px; height: 60px; background: rgba(201, 168, 76, 0.2); border-color: rgba(201, 168, 76, 0.8); backdrop-filter: blur(4px); }
+@media (max-width: 768px) { .premium-cursor { display: none !important; } * { cursor: auto !important; } }
+
+/* 5. זהב נוזלי (Liquid Gold) - הותאם לחנות! */
+.shop-hero h1 span, .age-logo, .cart-hdr h2 {
+  background: linear-gradient(to right, #c9a84c 0%, #fffbdc 40%, #e0be63 60%, #c9a84c 100%);
+  background-size: 200% auto; color: transparent; -webkit-background-clip: text; background-clip: text;
+  animation: liquidGold 6s linear infinite;
+}
+
+/* 6. אפקט מגנטי מחשמל לכרטיסיות המוצרים */
+.pcard { position: relative; overflow: hidden; }
+.pcard::before {
+  content: ''; position: absolute; top: 0; left: -100%; width: 50%; height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(201, 168, 76, 0.08), transparent);
+  transform: skewX(-25deg); transition: 0.8s; z-index: 5; pointer-events: none;
+}
+.pcard:hover::before { left: 150%; }
+.pcard:hover { transform: translateY(-8px) scale(1.02); box-shadow: 0 20px 40px rgba(0, 0, 0, 0.8), 0 0 20px rgba(201, 168, 76, 0.15); border-color: rgba(201, 168, 76, 0.5); z-index: 10; }
+  </style>
+</head>
+<body>
+
+  <div id="premiumPreloader">
+  <div class="preloader-content">
+    <h1 class="preloader-logo">GINO VINO</h1>
+    <div class="loading-line"></div>
+  </div>
+</div>
+
+<div class="film-grain"></div>
+
+<!-- AGE GATE -->
+<div id="ageGate">
+  <div class="age-wrap">
+    <div class="age-logo">GINO VINO</div>
+    <div class="age-tagline">WINE SHOP &amp; NEIGHBORHOOD BAR</div>
+    <div class="age-icon"><i class="fas fa-wine-bottle"></i></div>
+    <h2 class="age-q">האם אתה מעל גיל 18?</h2>
+    <p class="age-note">כניסה לחנות מוגבלת לבגירים בלבד.<br>אנא אשר את גילך להמשך.</p>
+    <div class="age-btns">
+      <button class="age-yes" id="ageYes">
+        <i class="fas fa-check" style="margin-left:8px"></i>כן, אני מעל 18
+      </button>
+      <button class="age-no" id="ageNo">לא</button>
+    </div>
+    <p class="age-law">מכירת אלכוהול לבני 18+ בלבד | שתו באחריות</p>
+  </div>
+</div>
+
+<!-- HEADER -->
+<header class="hdr">
+  <a href="index.html" class="hdr-logo">
+    <i class="fas fa-wine-bottle"></i>GINO VINO
+  </a>
+  <nav class="hdr-nav">
+    <a href="index.html">דף הבית</a>
+    <a href="shop-pro.html" class="active">חנות</a>
+    <a href="index.html#branches">הסניפים</a>
+    <a href="index.html#events">אירועים</a>
+    <a href="#" onclick="openCart(); return false;">תשלום</a>
+  </nav>
+  <div class="hdr-right">
+    <button class="cart-trigger" id="cartTrigger">
+      <i class="fas fa-shopping-cart"></i>
+      <span>עגלה</span>
+      <span class="cart-badge" id="cartBadge">0</span>
+    </button>
+    <div class="hmbgr" id="hamburger">
+      <span></span><span></span><span></span>
+    </div>
+  </div>
+</header>
+
+<!-- MOBILE NAV -->
+<nav id="mobNav">
+  <a href="index.html">דף הבית</a>
+  <a href="shop-pro.html">חנות</a>
+  <a href="index.html#branches">הסניפים</a>
+  <a href="index.html#events">אירועים</a>
+  <a href="#" onclick="openCart(); return false;">תשלום</a>
+</nav>
+
+<!-- HERO -->
+<div class="shop-hero">
+  <div class="shop-hero-inner">
+    <h1>החנות שלנו — <span>פרימיום</span></h1>
+    <p>מאות מוצרים מובחרים: יינות, ויסקי, ג׳ין, רום, בירות וליקרים. המשלוח עד הבית.</p>
+  </div>
+</div>
+
+
+<div class="premium-marquee" dir="ltr">
+  <div class="marquee-track">
+    <span>PREMIUM WINE & SPIRITS ✦ EXCLUSIVE COLLECTION ✦ FAST DELIVERY ✦ </span>
+    <span>PREMIUM WINE & SPIRITS ✦ EXCLUSIVE COLLECTION ✦ FAST DELIVERY ✦ </span>
+    <span>PREMIUM WINE & SPIRITS ✦ EXCLUSIVE COLLECTION ✦ FAST DELIVERY ✦ </span>
+    <span>PREMIUM WINE & SPIRITS ✦ EXCLUSIVE COLLECTION ✦ FAST DELIVERY ✦ </span>
+  </div>
+</div>
+
+<!-- TOOLBAR -->
+<div class="toolbar">
+  <div class="toolbar-inner">
+    <div class="search-wrap">
+      <i class="fas fa-search"></i>
+      <input type="text" id="searchInput" placeholder="חפש מוצר..." autocomplete="off">
+    </div>
+    <select class="sort-select" id="sortSelect">
+      <option value="default">מיון: ברירת מחדל</option>
+      <option value="price-asc">מחיר: נמוך לגבוה</option>
+      <option value="price-desc">מחיר: גבוה לנמוך</option>
+      <option value="name-asc">שם: א–ת</option>
+      <option value="sale">מבצעים קודם</option>
+    </select>
+    <button class="filter-toggle-btn" id="filterToggle">
+      <i class="fas fa-sliders-h"></i>פילטרים
+    </button>
+    <span class="products-count" id="productsCount">טוען...</span>
+  </div>
+</div>
+
+<!-- CAT BAR -->
+<div class="cat-bar">
+  <div class="cat-bar-inner" id="catBar"></div>
+</div>
+
+<!-- MAIN -->
+<main class="shop-body">
+
+  <div class="sidebar-panel" id="filterPanel">
+    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:24px">
+      <div class="filter-section">
+        <h4><i class="fas fa-shekel-sign" style="margin-left:6px"></i>טווח מחירים</h4>
+        <div class="price-range">
+          <input type="range" id="priceMin" min="0" max="2000" value="0" step="10" oninput="updatePriceFilter()">
+          <span style="color:var(--text2);font-size:0.8rem">עד</span>
+          <input type="range" id="priceMax" min="0" max="2000" value="2000" step="10" oninput="updatePriceFilter()">
+        </div>
+        <div class="price-vals">
+          <span>₪<span id="priceMinVal">0</span></span>
+          <span>₪<span id="priceMaxVal">2000</span></span>
+        </div>
+      </div>
+      <div class="filter-section">
+        <h4><i class="fas fa-percentage" style="margin-left:6px"></i>אחוז אלכוהול</h4>
+        <div class="alc-btns">
+          <button class="alc-btn active" data-alc="all" onclick="setAlcFilter(this,'all')">הכל</button>
+          <button class="alc-btn" data-alc="low" onclick="setAlcFilter(this,'low')">0–15%</button>
+          <button class="alc-btn" data-alc="mid" onclick="setAlcFilter(this,'mid')">15–35%</button>
+          <button class="alc-btn" data-alc="high" onclick="setAlcFilter(this,'high')">35%+</button>
+        </div>
+      </div>
+      <div class="filter-section">
+        <h4><i class="fas fa-tag" style="margin-left:6px"></i>סינון נוסף</h4>
+        <div class="toggle-row">
+          <label for="onlyActive">הצג רק במלאי</label>
+          <input type="checkbox" id="onlyActive" onchange="renderProducts()">
+        </div>
+        <div class="toggle-row">
+          <label for="onlySale">מבצעים בלבד</label>
+          <input type="checkbox" id="onlySale" onchange="renderProducts()">
+        </div>
+      </div>
+    </div>
+    <button onclick="resetFilters()" style="margin-top:14px;background:transparent;border:1px solid var(--border);color:var(--text2);padding:8px 22px;border-radius:50px;font-size:0.82rem;font-weight:600;transition:all var(--t);" onmouseover="this.style.borderColor='var(--gold)';this.style.color='var(--gold)'" onmouseout="this.style.borderColor='var(--border)';this.style.color='var(--text2)'">
+      <i class="fas fa-undo" style="margin-left:6px"></i>אפס פילטרים
+    </button>
+  </div>
+
+  <div class="products-grid" id="productsGrid">
+    <div class="empty-state">
+      <i class="fas fa-wine-glass"></i>
+      <h3>טוען מוצרים...</h3>
+    </div>
+  </div>
+
+</main>
+
+<!-- CART DRAWER -->
+<div class="cart-overlay" id="cartOverlay" onclick="closeCart()"></div>
+<div class="cart-drawer" id="cartDrawer">
+  <div class="cart-hdr">
+    <h2><i class="fas fa-shopping-cart"></i>עגלת הקניות</h2>
+    <button class="cart-close-btn" onclick="closeCart()"><i class="fas fa-times"></i></button>
+  </div>
+  <div class="cart-body" id="cartBody"></div>
+  <div class="cart-footer" id="cartFooter" style="display:none">
+    <div class="coupon-row">
+      <input type="text" id="couponInput" placeholder="קוד קופון...">
+      <button class="coupon-apply-btn" onclick="applyCoupon()">הפעל</button>
+    </div>
+    <div class="coupon-msg" id="couponMsg"></div>
+    <div class="delivery-opts">
+      <div class="del-opt active" id="optPickup" onclick="setDelivery('pickup')">
+        <i class="fas fa-store"></i><span>איסוף עצמי</span><small>חינם</small>
+      </div>
+      <div class="del-opt" id="optDelivery" onclick="setDelivery('delivery')">
+        <i class="fas fa-truck"></i><span>משלוח</span><small>30 ₪</small>
+      </div>
+    </div>
+    <div id="pickupDetails" style="display:block;background:var(--bg4);border:1px solid var(--border);padding:14px;border-radius:var(--r);margin-bottom:18px;">
+      <div style="margin-bottom:12px;">
+        <label style="display:block;font-size:0.85rem;color:var(--text2);margin-bottom:6px;">בחר סניף איסוף:</label>
+        <select id="pickupBranch" style="width:100%;background:var(--bg3);border:1px solid var(--border);color:var(--text);padding:10px;border-radius:6px;outline:none;font-family:'Assistant',sans-serif;">
+          <option value="הוד השרון">הוד השרון — דרך הרמתיים 35</option>
+          <option value="הרצליה">הרצליה — רחוב הנמל 12</option>
+          <option value="קיסריה">קיסריה — הנמל הדייגים</option>
+        </select>
+      </div>
+      <div>
+        <label style="display:block;font-size:0.85rem;color:var(--text2);margin-bottom:6px;">תאריך איסוף מבוקש:</label>
+        <input type="date" id="pickupDate" style="width:100%;background:var(--bg3);border:1px solid var(--border);color:var(--text);padding:10px;border-radius:6px;outline:none;font-family:'Assistant',sans-serif;color-scheme:dark;">
+      </div>
+    </div>
+    <div class="cart-totals" id="cartTotals"></div>
+    <a href="תשלום.html">
+      <button class="checkout-btn" id="checkoutBtn" onclick="goCheckout()">
+        <i class="fas fa-lock" style="margin-left:8px"></i>המשך לפרטים אישיים
+      </button>
+    </a>
+    <button class="clear-cart-btn" onclick="clearCart()">
+      <i class="fas fa-trash" style="margin-left:6px"></i>רוקן עגלה
+    </button>
+  </div>
+</div>
+
+<!-- TOAST -->
+<div class="toast" id="toast">
+  <i class="fas fa-check-circle"></i>
+  <div class="toast-text" id="toastText"></div>
+</div>
+
+<!-- FLOATING -->
+<div class="floats">
+  <a href="tel:0536210899" class="float-btn float-ph"><i class="fas fa-phone"></i></a>
+  <a href="https://wa.me/9720536210899" class="float-btn float-wa" target="_blank"><i class="fab fa-whatsapp"></i></a>
+</div>
+
+<!-- FOOTER -->
+<footer>
+  <div class="f-links" style="margin-bottom:12px">
+    <a href="index.html">דף הבית</a>
+    <a href="shop-pro.html">חנות</a>
+    <a href="תקנון.html">תקנון</a>
+    <a href="#" onclick="openCart(); return false;">תשלום</a>
+  </div>
+  <p>© 2026 GINO VINO · כל הזכויות שמורות · עוצב על ידי COREDIGITAL</p>
+  <p>מכירת אלכוהול לבני 18+ בלבד | שתו באחריות</p>
+</footer>
+
+<script src="products.js"></script>
+
+<script>
+/* ══════════════════════════════════════════════════
+   CATEGORY CONFIG
+══════════════════════════════════════════════════ */
+const CATEGORIES = [
+  { id: 'all',    label: 'הכל',    icon: 'fas fa-th' },
+  { id: 'יין',    label: 'יינות',  icon: 'fas fa-wine-glass-alt' },
+  { id: 'וויסקי', label: 'ויסקי',  icon: 'fas fa-whiskey-glass' },
+  { id: 'ג׳ין',   label: "ג'ין",   icon: 'fas fa-flask' },
+  { id: 'וודקה',  label: 'וודקה',  icon: 'fas fa-snowflake' },
+  { id: 'טקילה',  label: 'טקילה',  icon: 'fas fa-pepper-hot' },
+  { id: 'רום',    label: 'רום',    icon: 'fas fa-anchor' },
+  { id: 'בירות',  label: 'בירות',  icon: 'fas fa-beer' },
+  { id: 'ליקרים', label: 'ליקרים', icon: 'fas fa-candy-cane' },
+  { id: 'קוניאק', label: 'קוניאק', icon: 'fas fa-wine-bottle' },
+  { id: 'וורמוט', label: 'וורמוט', icon: 'fas fa-glass-martini-alt' },
+  { id: 'אניס',   label: 'אניס',   icon: 'fas fa-star-of-david' },
+];
+
+/* ══════════════════════════════════════════════════
+   IMAGES — expanded pool per category (Unsplash, free)
+   getCatImage() picks deterministically by product name hash
+   → different product = different image within same category
+══════════════════════════════════════════════════ */
+const CAT_IMAGES = {
+  'יין': [
+    'https://images.unsplash.com/photo-1510812431401-41d2bd2722f3?w=400&q=80',
+    'https://images.unsplash.com/photo-1474722883778-792e7990302f?w=400&q=80',
+    'https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=400&q=80',
+    'https://images.unsplash.com/photo-1547595628-c61a29f496f0?w=400&q=80',
+    'https://images.unsplash.com/photo-1553361371-9b22f78e8b1d?w=400&q=80',
+    'https://images.unsplash.com/photo-1516594798947-e65505dbb29d?w=400&q=80',
+    'https://images.unsplash.com/photo-1584916201218-f4242ceb4809?w=400&q=80',
+  ],
+  'וויסקי': [
+    'https://images.unsplash.com/photo-1527529482837-4698179dc6ce?w=400&q=80',
+    'https://images.unsplash.com/photo-1506377585622-bedcbb5a8c4c?w=400&q=80',
+    'https://images.unsplash.com/photo-1569529465841-dfecdab7503b?w=400&q=80',
+    'https://images.unsplash.com/photo-1582553165569-61fb1f5a74f0?w=400&q=80',
+    'https://images.unsplash.com/photo-1470337458703-46ad1756a187?w=400&q=80',
+  ],
+  "ג'ין": [
+    'https://images.unsplash.com/photo-1544145945-f90425340c7e?w=400&q=80',
+    'https://images.unsplash.com/photo-1560512823-829485b8bf24?w=400&q=80',
+    'https://images.unsplash.com/photo-1551538827-9c037cb4f32a?w=400&q=80',
+  ],
+  'ג׳ין': [
+    'https://images.unsplash.com/photo-1544145945-f90425340c7e?w=400&q=80',
+    'https://images.unsplash.com/photo-1560512823-829485b8bf24?w=400&q=80',
+    'https://images.unsplash.com/photo-1551538827-9c037cb4f32a?w=400&q=80',
+  ],
+  'וודקה': [
+    'https://images.unsplash.com/photo-1570497227639-2b22af7aa437?w=400&q=80',
+    'https://images.unsplash.com/photo-1574313007-4b98b519f403?w=400&q=80',
+    'https://images.unsplash.com/photo-1598889462855-97d5e1c61f86?w=400&q=80',
+  ],
+  'טקילה': [
+    'https://images.unsplash.com/photo-1615887087218-26b3ebf25c12?w=400&q=80',
+    'https://images.unsplash.com/photo-1562016600-ece13e8ba570?w=400&q=80',
+    'https://images.unsplash.com/photo-1649748856255-f4e3fdc3d2d2?w=400&q=80',
+  ],
+  'רום': [
+    'https://images.unsplash.com/photo-1582819508369-82068d0a52d8?w=400&q=80',
+    'https://images.unsplash.com/photo-1598306441742-cf2aba3b2571?w=400&q=80',
+    'https://images.unsplash.com/photo-1615887087218-26b3ebf25c12?w=400&q=80',
+  ],
+  'בירות': [
+    'https://images.unsplash.com/photo-1558642452-9d2a7deb7f62?w=400&q=80',
+    'https://images.unsplash.com/photo-1566633806327-68e152aaf26d?w=400&q=80',
+    'https://images.unsplash.com/photo-1612528443702-f6741f70a049?w=400&q=80',
+    'https://images.unsplash.com/photo-1608270586620-248524c67de9?w=400&q=80',
+    'https://images.unsplash.com/photo-1499529112087-3cb3b73cec95?w=400&q=80',
+  ],
+  'ליקרים': [
+    'https://images.unsplash.com/photo-1560512823-829485b8bf24?w=400&q=80',
+    'https://images.unsplash.com/photo-1551538827-9c037cb4f32a?w=400&q=80',
+    'https://images.unsplash.com/photo-1536935338788-846bb9981813?w=400&q=80',
+  ],
+  'קוניאק': [
+    'https://images.unsplash.com/photo-1527529482837-4698179dc6ce?w=400&q=80',
+    'https://images.unsplash.com/photo-1506377585622-bedcbb5a8c4c?w=400&q=80',
+    'https://images.unsplash.com/photo-1582553165569-61fb1f5a74f0?w=400&q=80',
+  ],
+  'וורמוט': [
+    'https://images.unsplash.com/photo-1544145945-f90425340c7e?w=400&q=80',
+    'https://images.unsplash.com/photo-1560512823-829485b8bf24?w=400&q=80',
+  ],
+  'אניס': [
+    'https://images.unsplash.com/photo-1560512823-829485b8bf24?w=400&q=80',
+    'https://images.unsplash.com/photo-1538334421852-687ccb6c09f5?w=400&q=80',
+  ],
+};
+
+/* Fallback icon per category */
+const CAT_ICONS = {
+  'יין':'fa-wine-glass-alt','וויסקי':'fa-whiskey-glass',
+  "ג'ין":'fa-flask','ג׳ין':'fa-flask',
+  'וודקה':'fa-snowflake','טקילה':'fa-pepper-hot',
+  'רום':'fa-anchor','בירות':'fa-beer',
+  'ליקרים':'fa-candy-cane','קוניאק':'fa-wine-bottle',
+  'וורמוט':'fa-glass-martini-alt','אניס':'fa-star-of-david',
+};
+
+function getCatImage(cat, name) {
+  const imgs = CAT_IMAGES[cat] || CAT_IMAGES['יין'];
+  let h = 0; for (let c of name) h = (h << 5) - h + c.charCodeAt(0);
+  return imgs[Math.abs(h) % imgs.length];
+}
+
+/* ══════════════════════════════════════════════════
+   PRODUCT DESCRIPTIONS — שיווקי, לפי שם מוצר מדויק
+══════════════════════════════════════════════════ */
+const PRODUCT_DESC = {
+  /* אניס */
+  'אוזו מטקסה':'אוזו יווני קלאסי מבית Metaxa — ניחוח אניס עדין ומרענן, גישה אותנטית לאורח חיים מדיטרניאני.',
+  'אוזו קרדסי':'מהמותגים המוכרים ביוון, מתאפיין בטעם אניס עשיר ואיזון מושלם.',
+  'ערק לימונים 700':'ערק ישראלי מסורתי בתוספת ארומת לימון רעננה — לשתייה ישירה עם קרח.',
+  'ערק לימונים ליטר':'גרסת הליטר של ערק הלימונים האהוב — חסכוני ומושלם לאירועים.',
+  'ארק כרמל':'ארק כרמל הנחשב — טעם אניס עז ואותנטי, מורשת מזרחית בכל לגימה.',
+  'ערק נח':'ערק פרימיום ישראלי בעל טיבול עדין, מיוצר בשיטה מסורתית לבנטינית.',
+  'ערק עלית':'ערק עלית — הטעם האותנטי והאהוב בישראל. מיוצר בתהליך מסורתי מדורי דורות.',
+  'ערק עמיאל 700':'ערק עמיאל 700 מ"ל — חלק וסמוי, מושלם לשתייה ישירה עם קרח.',
+  /* ג׳ין */
+  '7 קראפט':'ג׳ין ישראלי בוטיק מזוקק מדגנים מקומיים עם 7 בוטניקלים ייחודיים שנבחרו בקפידה.',
+  'ארטה':'Arta Gin — ג׳ין ספרדי עדין עם בוטניקלים מדיטרניאניים. מושלם ל-Gin & Tonic.',
+  'בולדוג':'Bulldog Gin — ג׳ין לונדוני מעודן עם 12 בוטניקלים, 47% Vol. שופע אופי.',
+  'בומביי ליטר':'Bombay Sapphire 1L — מזוקק עם 10 בוטניקלים אקזוטיים. הסטנדרט המוזהב.',
+  'ביפיטר ליטר':"Beefeater 1L — ג'ין לונדוני קלאסי מ-1863. ניחוח ג'וניפר אייקוני.",
+  'ביפיטר פינק':'Beefeater Pink — ג׳ין לונדוני עם טעם תות שדה עדין, ורוד ומפתה.',
+  'גורדון 700':"Gordon's Gin — ג'ין בריטי קלאסי, קרישפי וורסטילי לכל בר.",
+  'הנדריקס':"Hendrick's — ג'ין סקוטי מיוצר עם מלפפון וורד. חוויה גסטרונומית ייחודית.",
+  'טינקרס גין גרין':'Tinkters Green — ג׳ין ישראלי בוטיק ירוק ורענן עם בוטניקלים מקומיים.',
+  'טינקרס גין פינק':'Tinkters Pink — ג׳ין ישראלי ורוד עם ניחוחות פרחוניים ופירות יער.',
+  'טינקרס גין פרפל':'Tinkters Purple — גרסת הסגול, קסומה עם לוונדר ובוטניקלים נדירים.',
+  'מארה':'Mara Gin — ג׳ין ישראלי עם בוטניקלים של הים התיכון. ייחודי ובלתי נשכח.',
+  'רוקו גין':'Roku — ג׳ין יפני מזוקק עם 6 בוטניקלים כולל ענבי Sakura ותה ירוק.',
+  /* וודקה */
+  'בלוגה':'Beluga — וודקה רוסית פרימיום מזוקקת חמש פעמים. קטיפתית וחלקה לשלמות.',
+  'בלוודר':'Belvedere — וודקה פולנית מחיטה מקורית. פרמיום אמיתי בכל לגימה.',
+  'גרייגוס ליטר':'Grey Goose 1L — וודקה צרפתית יוקרתית מחיטה נבחרת. מסיים רך ונקי.',
+  'סמירנוף 700':'Smirnoff No.21 — וודקה בינלאומית אייקונית. נקייה ומושלמת לקוקטיילים.',
+  'סמירנוף ליטר':'Smirnoff 1L — גרסת הליטר החסכונית של הוודקה הנמכרת בעולם.',
+  'סטולי 700':'Stolichnaya — וודקה רוסית קלאסית, מזוקקת שלוש פעמים לטוהר מירבי.',
+  'סטולי גולד':'Stoli Gold — מזוקק ארבע פעמים. מרקם קטיפתי ומסיים ממושך.',
+  'סטולי ליטר':'Stolichnaya 1L — ליטר של הוודקה הרוסית האגדית. אידיאלי לאירועים.',
+  'סטולי ללא גלוטן':'Stoli Gluten Free — מגובשת מתירס ובורגו. מושלמת לרגישים לגלוטן.',
+  'סטולי עלית':'Stoli Elit — מזוקק בטמפרטורת קיפאון. הפסגה של מה שוודקה יכולה להיות.',
+  'פינלנדיה 700 מ׳׳ל':'Finlandia — וודקה פינית ממעיינות ארקטיים. צחה, מרעננת וטהורה.',
+  'פינלנדיה ליטר':'Finlandia 1L — ליטר של הוודקה הסקנדינבית הטהורה.',
+  'פילנדיה 200 מל':'Finlandia 200ml — מינסייז מושלמת לאורח לדרך או לאירוע אינטימי.',
+  'רוברטו קוואלי':'Roberto Cavalli Vodka — וודקה יוקרתית של בית האופנה האייקוני. מרשימה.',
+  'רוברטו קוואלי אבטיח':'Roberto Cavalli Watermelon — פיוז׳ן יוקרה ופירות קיץ. מרענן ומפתיע.',
+  'רוברטו קוואלי אננס':'Roberto Cavalli Pineapple — טרופי, פיקנטי ועשיר. האקזוטיות בכוס.',
+  'רוברטו קוואלי מלון':'Roberto Cavalli Melon — מלון ירוק קרמי ומתוק. ייחודי ובלתי נשכח.',
+  'לגנד קרמלין':'Kremlin Award — וודקה פרמיום רוסית מסורתית. מזוקק בשיטה ייחודית.',
+  /* ויסקי */
+  'JB':'J&B Rare — בלנד סקוטי יבש וקל. נקי, אלגנטי, ואחד הנמכרים בעולם.',
+  'ג׳ק דניאלס תפוח':"Jack Daniel's Apple — הוויסקי הטנסי האייקוני בגרסת תפוח ירוק קריספי.",
+  'ג׳ק דניאלס 200 מיל':"Jack Daniel's 200ml — מינסייז של הוויסקי הנחשק. מושלם למתנה.",
+  'ג׳וני ווקר - בלאק לייבל 700':'Johnnie Walker Black Label — בלנד סקוטי 12 שנה. עשיר, מעושן ועמוק.',
+  'ג׳וני ווקר - בלאק לייבל ליטר':'Johnnie Walker Black 1L — ליטר של הבלנד האייקוני 12 שנה.',
+  'ג׳וני ווקר - רד לייבל 700':'Johnnie Walker Red — הכניסה הקלאסית. אופייני, נגיש ורב-תכליתי.',
+  'ג׳וני ווקר - רד לייבל ליטר':'Johnnie Walker Red 1L — ליטר של הוויסקי הסקוטי הנמכר ביותר.',
+  'ג׳וני ווקר - גולד לייבל':'Johnnie Walker Gold 18Y — 18 שנה. זהב בכל מובן: עשיר ומורכב.',
+  'ג׳וני ווקר - גרין לייבל':'Johnnie Walker Green — בלנד סינגל מאלטים בלבד. נדיר ומתוחכם.',
+  'ג׳וני ווקר - דאבל בלאק':'Johnnie Walker Double Black — עשון כפול, אינטנסיבי ואמיץ.',
+  'ג׳וני ווקר - בלאק לייבל 200 מל':'Johnnie Walker Black 200ml — מינסייז של ה-Black Label האייקוני.',
+  'ג׳ים בים ברבן':'Jim Beam Bourbon — הבורבון האמריקאי הקלאסי. וניל, קרמל ואורח.',
+  'ג׳ים בים דבש':'Jim Beam Honey — בורבון אמיתי עם דבש טבעי. מתוק ומפתה.',
+  'ג׳ים בים צ׳רי':'Jim Beam Cherry — בורבון עם ניחוח דובדבן עז ומרענן.',
+  'ג׳ים בים שחור':'Jim Beam Black Extra Aged — 8 שנות בשלה. עשיר ומסיים ממושך.',
+  'ג׳ים בים תפוח':'Jim Beam Apple — תפוח ירוק קריספי על בסיס הבורבון הקלאסי.',
+  'גלן גראנט 10':'Glen Grant 10Y — סינגל מאלט ספיסייד. קל, פירותי ומושלם להתחלה.',
+  'גלן גראנט 12':'Glen Grant 12Y — שנתיים נוספות של עידון לסינגל המאלט האלגנטי.',
+  'גלן גראנט קלאסי':"Glen Grant Major's Reserve — כניסה נגישה לסינגל מאלטים מובחרים.",
+  'גלן גרנט 18':'Glen Grant 18Y — 18 שנות בשלה בחביות אלון. עושר ואלגנטיות.',
+  'גלנדפידיך 12':'Glenfiddich 12Y — סינגל מאלט ספיסייד הנמכר בעולם. פירותי ועדין.',
+  'גלנדפידיך 14':'Glenfiddich 14Y Bourbon Barrel — וניל, דבש ומסיים מתוק.',
+  'גלנדפידיך 15':'Glenfiddich 15Y Solera — בשלה ב-Solera Vat. מורכב ושמנתי.',
+  'גלנדפידיך 18':'Glenfiddich 18Y Small Batch — 18 שנות בישול קפדניות. עמוק ומרשים.',
+  'גלנדפידיך 21':'Glenfiddich 21Y Gran Reserva — גמר בחביות רום קריבי. שיא הבישול.',
+  'גלנדפידיך 21 וינטר סטורם':'Glenfiddich Winter Storm 21Y — Ice Wine Casks. מהדורה מוגבלת נדירה.',
+  'גלנליבט 12':'Glenlivet 12Y — ספיסייד עדין ופירותי. אייקון עולמי בכל לגימה.',
+  'גלנליבט 15':'Glenlivet 15Y French Oak — בשלה באלון צרפתי. עושר ייחודי.',
+  'גלנליבט פאונדרס':"Glenlivet Founder's Reserve — חיה, רכה עם גמר פרי מדהים.",
+  'היביקי':'Hibiki Japanese Harmony — שירת ה-24 פירות. בלנד יפני מושלם.',
+  'טינקרס ברבן':'Tinkters Bourbon — ויסקי ישראלי בסגנון בורבון אמריקאי. מפתיע.',
+  'טליסקר סטורם':'Talisker Storm — איי סקיי סקוטלנד. עשן, ים ופלפל שחור.',
+  'טליסקר סקאי':'Talisker Skye — גרסה עדינה של הסינגל מאלט הים-תיכוני.',
+  'לגבולין 16':'Lagavulin 16Y — האייסלאי הגדול. עשן כבד, קורפ ומרקם קטיפתי.',
+  'לפרויג 10':'Laphroaig 10Y — ארומה רפואית ועשן יוד. האייסלאי הכי אהוב.',
+  'לפרויג סלקט':'Laphroaig Select — ביטוי עדין של הקלאסיקה האייסלאי. רועם אך מאוזן.',
+  'לפרויג קווארטר קאסק':'Laphroaig Quarter Cask — בשלה בחביות רבע. עשיר ועמוק.',
+  'מאנקי שולדר':'Monkey Shoulder — בלנד שלושה סינגל מאלטים ספיסייד. עדין וחביב.',
+  'מילק & האני חביות יין':'Milk & Honey Wine Casks — ויסקי ישראלי בסיום חביות יין ישראלי.',
+  'מילק & האני לייטלי פיטד':'Milk & Honey Lightly Peated — ויסקי ישראלי עם גימור עשן עדין.',
+  'מילק & האני צרי קסק':'Milk & Honey Sherry Cask — בשלה בחביות שרי. מתוק ומרשים.',
+  'מילק & האני קלאסיק':'Milk & Honey Classic — הוויסקי הישראלי הראשון. פורץ דרך.',
+  'מקאלן 12':'Macallan 12Y — אחד הנחשקים בעולם. שרי, וניל ועמוק.',
+  'מקלאן 15':'Macallan 15Y — 15 שנות בשלה בחביות שרי. עמוק, חם ומסיים כסוף.',
+  'מקלן 18':'Macallan 18Y — שוקולד, פירות יבשים ועץ. שלמות עם 18 שנה.',
+  'נוב קריק':'Knob Creek 9Y Bourbon — מלא, מוצק ואמריקאי עד הסוף.',
+  'סינגלטון 12 שנים':'Singleton 12Y — ספיסייד עדין ומגרה. מתוק, קרמלי וקל לשתייה.',
+  'סינגלטון':'Singleton of Dufftown — כניסה מרגשת לעולם הסינגל מאלטים.',
+  'קאבאלאן':'Kavalan Concertmaster — ויסקי טייוואני חם ופירותי. יוצא דופן.',
+  'קוג׳ירה 10':'Kozjira 10Y — ויסקי ישראלי. 10 שנות בישול תחת שמש ישראלית.',
+  'קוג׳ירה 15':'Kozjira 15Y — 15 שנות בשלה ישראלית. עומק ומורכבות ייחודיים.',
+  'קוג׳ירה 5':'Kozjira 5Y — כניסה לויסקי הישראלי החדשני. עדין ומבטיח.',
+  'קוג׳ירה אינרי':'Kozjira Inari — מהדורה מיוחדת עם גמר חביות ייחודיות.',
+  'שיבאס':"Chivas Regal 12Y — הבלנד הסקוטי האלגנטי. דבש, וניל ופירות.",
+  'בושמילס 16':'Bushmills 16Y — ויסקי אירי Triple Wood. עשיר ובלתי נשכח.',
+  'בושמילס אורינגל':"Bushmills Original — הוויסקי האירי הוותיק בעולם. קל ורך.",
+  'בושמילס בלאק בוש':'Bushmills Black Bush — שרי קאסק. עמוק ופירותי.',
+  'בלביני 12':'Balvenie 12Y DoubleWood — קרמלי, מתוק ומרשים.',
+  'בלביני 14':'Balvenie 14Y Caribbean Cask — גמר רום קריבי. מתוק, חם וטרופי.',
+  /* קוניאק */
+  'הנסי vs':'Hennessy VS — קוניאק קלאסי. עמוק, עגול ומרוממת נפש.',
+  'הנסי vsop':'Hennessy VSOP — 4–8 שנים. פירות, וניל ועץ אלון בהרמוניה.',
+  'סט רמי vsop':"Rémy Martin VSOP — קוניאק פין שמפיין. קרמי ופרחוני.",
+  'סט רמי xo':"Rémy Martin XO — 37 איווי-דה-וי. פירות יבשים ועושר עמוק.",
+  'רביזייר vs':"Réviseur VS — קוניאק צרפתי פרימיום. ארומה פירותית וקטיפתי.",
+  'רביזייר vsop':"Réviseur VSOP — 4–10 שנות בשלה. עמוק ומסיים ממושך.",
+  'רביזייר xo':"Réviseur XO — שיא הבשלה. עשיר, כהה ובלתי נשכח.",
+  'רמי מרטין 1738':"Rémy Martin 1738 Accord Royal — מתכון מלכותי. מורכב וחם.",
+  'רמי מרטין vsop':"Rémy Martin VSOP — פין שמפיין. קרמי, פרחוני ומרגש.",
+  'רמי מרטין xo':"Rémy Martin XO Excellence — עושר ועמקות. קלאסי ואייקוני.",
+  /* רום */
+  'בקרדי לבן ליטר':'Bacardi Carta Blanca — רום קובני לבן קלאסי. הבסיס לכל קוקטייל.',
+  'בקרדי ספייס 750':'Bacardi Spiced — רום תבלינים עם וניל וקינמון. מחמם ומפנק.',
+  'נגריטה לבן':'Negrita White Rum — רום קריבי לבן עדין. אידיאלי ל-Mojito.',
+  'נגריטה שחור ליטר':'Negrita Dark Rum 1L — רום אפל עשיר. גוף מלא ומסיים מתוק.',
+  'קפטן מורגן בלאנקו 700 מל':"Captain Morgan White — בסיס אידיאלי לקוקטיילים.",
+  'קפטן מורגן בלאק':"Captain Morgan Black — רום אפל ספייסד. מלא ועז.",
+  'קפטן מורגן ספייס 750 מל':"Captain Morgan Spiced Gold — וניל, תבלינים ורום.",
+  'קרקאן':'Kraken Black Spiced Rum — שחור ספייסד מטרינידד. אגדי ומסתורי.',
+  'קשאסה':'Cachaça — ליקר סוכר קנים ברזילאי. הבסיס ל-Caipirinha האותנטי.',
+  /* טקילה */
+  '1800 אנייחו':'1800 Anejo — טקילה ישנה 14 חודש. עמוקה עם וניל ועץ.',
+  '1800 בלאנקו':'1800 Blanco — טקילה טרייה מהאגבה. קרישפי ואותנטי.',
+  '1800 קריסטילינו':'1800 Cristalino — אניחו מסונן לשקיפות. חלק ויוקרתי.',
+  '1800 ריפוסדו':'1800 Reposado — 6–8 חודש בשלה. איזון מושלם בין אגבה לעץ.',
+  '1800 מילניו':'1800 Milenio Extra Anejo — 3 שנות בשלה. הפסגה של 1800.',
+  'גרן אורנדיאן אניחו':'Gran Centenario Anejo — פרמיום מאגבה כחולה. מורכבת.',
+  'גרנד מאיין אקסטה אניחו כחול':'Grand Mayan Extra Anejo Blue — 4 שנות בישול. נדירה.',
+  'גרנד מאיין אקסטרה אניחו 1750 מל':'Grand Mayan Extra Anejo 1.75L — בקבוק XL לאירועים.',
+  'דון חוליו 1942':'Don Julio 1942 — 2.5 שנות בשלה. הפסגה של בית Don Julio.',
+  'דון חוליו אניחו':'Don Julio Anejo — 18 חודשי בשלה. שוקולד, קרמל ואגבה.',
+  'דון חוליו בלאנקו':'Don Julio Blanco — אגבה כחולה טהורה. קלה, חיה ורעננה.',
+  'דון חוליו ריפוסדו':'Don Julio Reposado — 8 חודשים בחביות. מאוזנת ועדינה.',
+  'פטרון אניחו':"Patron Anejo — 12 חודשי בשלה. קרמי ומסיים עמוק.",
+  'פטרון סילבר':"Patron Silver — עדינות וניקיון. הטקילה לקוקטייל המושלם.",
+  'קווארבו גולד':"Jose Cuervo Gold — הנמכרת בעולם. ידידותית ועליזה.",
+  'קווארבו סילבר':"Jose Cuervo Silver — כניסה בהירה לעולם הטקילה האותנטי.",
+  'רוסטו רוחו בלאנקו':'Robusto Rojo Blanco — מאגבה בוגרת 7 שנים. כהה ועמוקה.',
+  'רוסטו רוחו רפסדו':'Robusto Rojo Reposado — 6 חודשים בחביות. אופי ייחודי.',
+  'גרנד מאיין ריפוסדו':'Grand Mayan Reposado — שנת בשלה מלאה. חלקה ועדינה.',
+  /* יינות — ראשי הסדרות */
+  'ארטיזנל - בלנד אדום':'בלנד מרגש מיינות הנגב. עגול, פירותי ומלא אופי ישראלי.',
+  'ארטיזנל - דיזייר':'Desire — בלנד יוקרתי לאירועים מיוחדים. מרשים ובלתי נשכח.',
+  'ארטיזנל - ויונייה':'ויונייה עדינה ופרחונית עם ארומות ורד ופירות טרופיים.',
+  'ארטיזנל - מלבק':'מלבק מלא גוף עם ניחוחות שזיפים ופרחים. אלגנטי.',
+  'ארטיזנל - שיראז':'שיראז עם ניחוחות ממתקי שחור ותבלינים. חם ומלא חייים.',
+  'ארטיזנל - שרדונה':'שרדונה מינרלית עם ניחוחות אגס ותפוח. מרענן ויבש.',
+  'כישור - ויונייה':'כישור ויונייה מהגליל המערבי — טרי, פרחוני ומרענן.',
+  'כישור - ריזלינג':'ריזלינג ישראלי יוצא דופן — מינרלי, חמצמץ ורב שכבות.',
+  'כישור - תפן לבן':'תפן לבן — בלנד מיוחד מהגליל. עשיר ומרגש.',
+  'טוליפ - לבן':'טוליפ לבן — יין ישראלי פרמיום. נקי, מינרלי ומרענן.',
+  'טוליפ - סירה':'סירה עמוקה עם ניחוחות שזיפים וכשרים. מרשימה.',
+  'ויתקין - שורשים אדום':'שורשים אדום — פרויקט יוקרתי מכרמים ותיקים. עמוק ונדיר.',
+  'ויתקין - שורשים לבן':'שורשים לבן — מורכב ומינרלי מכרמים ישנים. ייחודי.',
+  'הר אודם - 1060':'1060 — יין גובה ברמת הגולן. חיוני, מינרלי ומרגש.',
+  'הר אודם - ספיישל אדישן':'Special Edition — מהדורה מוגבלת מהכרמים הגבוהים.',
+  'הר אודם - אלפסי לבן':'אלפסי לבן מהגולן — מינרלי, חי ועם גוף נאה.',
+  /* ליקרים */
+  'דיזרונו אמרטו':'Disaronno Originale — אמרטו איטלקי אייקוני. מתוק, שקדי.',
+  'אפרול':'Aperol — ליקר Citrus איטלקי. בסיס ה-Aperol Spritz הנחשק.',
+  'בייליס 700 מל':"Baileys Original — קרם אירי מפנק. שוקולד, קפה וויסקי.",
+  'ייגר':"Jägermeister — 56 עשבי תיבול גרמניים. ארומה מורכבת ואייקונית.",
+  'קמפרי':'Campari — ליקר אינטנסיבי. בסיס ה-Negroni הגדול.',
+  'קמפרי סודה':'Campari Soda — קלאסיקה איטלקית אחת בכוסית אחת.',
+  'שרטרז ירוק':'Chartreuse Verte — 130 עשבים מסתוריים. הליקר המורכב בעולם.',
+  'שרטרז צהוב':'Chartreuse Jaune — גרסה מתוקה ועדינה. מיסטי ומיוחד.',
+  'קוואנטרו':'Cointreau — ליקר תפוזים צרפתי. בסיס ה-Margarita ומאות קוקטיילים.',
+  'לימונצלו איזואבלה':'Limoncello Isabella — ישראלי, לימוני ורענן. לחם בכוסית.',
+  'סט ג׳רמן':'St-Germain — ליקר פרחי הסמבוק הצרפתי. קסום ויוקרתי.',
+  'בולס':'Bols — ליקרים הולנדיים קלאסיים לקוקטיילים צבעוניים.',
+  'טובי 60':'Toby 60 — ליקר ישראלי עם ארומת קפה ושוקולד. גאווה לאומית.',
+  'טובי נובה':'Toby Nova — גרסה חדשה של הליקר הישראלי הנאהב.',
+  'טובי נייט':'Toby Night — ליקר לילה ישראלי. אינטנסיבי לשעות הלילה.',
+  'פייר בול':'Pera Boul — ליקר אגס אלגנטי. פרוטי, מרענן ומפנק.',
+  'מוליס ליטר':"Malibu 1L — ליקר קוקוס קריבי. מתוק, טרופי ומזמין.",
+  'וילה מאסה':'Villa Massa Limoncello — מסורפנטו. עז, מורכב ואיטלקי.',
+  'שרידנס':"Sheridan's — ליקר שניים באחד: קפה ושמנת. אירי ומפנק.",
+  'פסאווה פסיפלורה':'Pasawa Passionfruit — ליקר פסיפלורה ישראלי. טרופי ועז.',
+  'פידג׳ ליטר':'Fudge 1L — ליקר ישראלי יוצא דופן. פניה רחבה לכולם.',
+  '1883 אבטיח':'1883 Watermelon — ליקר/סירופ אבטיח. מרוכז ומבריק.',
+  '1883 אננס':'1883 Pineapple — טרופי ועז. מושלם לקוקטיילים יצירתיים.',
+  '1883 קוקוס':'1883 Coconut — קוקוס מרוכז. לפינה קולדה ועוד.',
+  /* וורמוט */
+  'דולין לבן יבש':'Dolin Dry Vermouth — ורמוט יבש צרפתי. עדין, פרחוני ואלגנטי.',
+  'דולין לבן מתוק':'Dolin Blanc Vermouth — מתוק ועדין. בסיס ל-Negroni Blanc.',
+  'דולין שמברי':'Dolin Chambéry — ורמוט נדיר משמברי. עמוק ומורכב.',
+  'מרטיני אקסטרה דריי':'Martini Extra Dry — ורמוט יבש. חובה לכל בר מכובד.',
+  'מרטיני ביונקו':'Martini Bianco — ורמוט לבן מתוק. וניל ופרחים.',
+  'מרטיני רוסו':'Martini Rosso — ורמוט אדום קלאסי. ספייסד ואלגנטי.',
+};
+
+function getProductDesc(name) { return PRODUCT_DESC[name] || ''; }
+
+/* ══════════════════════════════════════════════════
+   STATE — unchanged from original
+══════════════════════════════════════════════════ */
+let activeCat = 'all';
+let searchQ = '';
+let sortMode = 'default';
+let priceMin = 0, priceMax = 2000;
+let alcFilter = 'all';
+let delivery = 'pickup';
+let discount = 0;
+let wishlist = JSON.parse(localStorage.getItem('ginoWishlist') || '[]');
+
+/* ══════════════════════════════════════════════════
+   PRODUCTS & FILTERING — unchanged from original
+══════════════════════════════════════════════════ */
+function getFilteredProducts() {
+  let prods = (typeof getProducts === 'function') ? getProducts() : [];
+  if (activeCat !== 'all') prods = prods.filter(p => p.category === activeCat);
+  if (searchQ.trim()) {
+    const q = searchQ.toLowerCase();
+    prods = prods.filter(p => p.name.toLowerCase().includes(q) || (p.category||'').toLowerCase().includes(q));
+  }
+  prods = prods.filter(p => {
+    const ep = getEffectivePrice(p);
+    return ep >= priceMin && ep <= priceMax;
+  });
+  if (alcFilter === 'low')  prods = prods.filter(p => (p.alcoholPercent||0) <= 15);
+  if (alcFilter === 'mid')  prods = prods.filter(p => (p.alcoholPercent||0) > 15 && (p.alcoholPercent||0) <= 35);
+  if (alcFilter === 'high') prods = prods.filter(p => (p.alcoholPercent||0) > 35);
+  if (document.getElementById('onlyActive')?.checked) prods = prods.filter(p => p.isActive);
+  if (document.getElementById('onlySale')?.checked) prods = prods.filter(p => hasDiscount(p));
+  if (sortMode === 'price-asc')  prods = [...prods].sort((a,b) => getEffectivePrice(a) - getEffectivePrice(b));
+  if (sortMode === 'price-desc') prods = [...prods].sort((a,b) => getEffectivePrice(b) - getEffectivePrice(a));
+  if (sortMode === 'name-asc')   prods = [...prods].sort((a,b) => a.name.localeCompare(b.name, 'he'));
+  if (sortMode === 'sale')       prods = [...prods].sort((a,b) => (hasDiscount(b)?1:0) - (hasDiscount(a)?1:0));
+  return prods;
+}
+
+function getEffectivePrice(p) { return (p.discountPrice && p.discountPrice > 0 && p.discountPrice < p.price) ? p.discountPrice : p.price; }
+function hasDiscount(p) { return p.discountPrice && p.discountPrice > 0 && p.discountPrice < p.price; }
+function discountPct(p) { if (!hasDiscount(p)) return 0; return Math.round((1 - p.discountPrice / p.price) * 100); }
+
+/* ══════════════════════════════════════════════════
+   RENDERING
+══════════════════════════════════════════════════ */
+function renderCatBar() {
+  const prods = (typeof getProducts === 'function') ? getProducts() : [];
+  const bar = document.getElementById('catBar');
+  bar.innerHTML = CATEGORIES.map(c => {
+    const count = c.id === 'all' ? prods.length : prods.filter(p => p.category === c.id).length;
+    if (count === 0 && c.id !== 'all') return '';
+    return `<button class="cat-pill ${activeCat===c.id?'active':''}" onclick="setCat('${c.id}')">
+      <i class="${c.icon}"></i>${c.label}
+      <span class="pill-count">${count}</span>
+    </button>`;
+  }).join('');
+}
+function setCat(id) { activeCat = id; renderCatBar(); renderProducts(); }
+
+function renderProducts() {
+  const grid = document.getElementById('productsGrid');
+  const prods = getFilteredProducts();
+  document.getElementById('productsCount').textContent = `${prods.length} מוצרים`;
+
+  if (!prods.length) {
+    grid.innerHTML = `<div class="empty-state"><i class="fas fa-search"></i><h3>לא נמצאו מוצרים</h3><p style="font-size:0.9rem">נסה לשנות את הפילטרים</p></div>`;
+    return;
+  }
+
+  const cart = getCart();
+  grid.innerHTML = prods.map(p => {
+    const ep = getEffectivePrice(p);
+    const hasSale = hasDiscount(p);
+    const pct = discountPct(p);
+    const imgUrl = getCatImage(p.category, p.name);
+    const isLoved = wishlist.includes(p.name);
+    const cartItem = cart.find(i => i.name === p.name);
+    const inCart = cartItem ? cartItem.qty : 0;
+    const desc = getProductDesc(p.name);
+    const fallbackIcon = CAT_ICONS[p.category] || 'fa-wine-bottle';
+
+    return `<div class="pcard" data-name="${esc(p.name)}">
+      <div class="pcard-img">
+        <img src="${imgUrl}" alt="${esc(p.name)}" loading="lazy"
+          onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+        <div class="img-fallback" style="display:none">
+          <i class="fas ${fallbackIcon}"></i><span>${esc(p.category)}</span>
+        </div>
+        ${hasSale ? `<span class="badge-sale">-${pct}%</span>` : ''}
+        ${!p.isActive ? `<div class="badge-out"><span>אזל מהמלאי</span></div>` : ''}
+        <button class="wishlist-btn ${isLoved?'loved':''}" onclick="toggleWish('${esc(p.name)}')" title="רשימת משאלות">
+          <i class="${isLoved?'fas':'far'} fa-heart"></i>
+        </button>
+      </div>
+      <div class="pcard-body">
+        <div class="pcard-cat">${esc(p.category)}</div>
+        <div class="pcard-name">${esc(p.name)}</div>
+        ${desc ? `<div class="pcard-desc">${esc(desc)}</div>` : ''}
+        ${p.alcoholPercent > 0 ? `<div class="pcard-alc"><i class="fas fa-percentage" style="font-size:0.7em;margin-left:3px"></i>${p.alcoholPercent}% אלכוהול</div>` : ''}
+        <div class="pcard-price">
+          <span class="price-main">${ep} ₪</span>
+          ${hasSale ? `<span class="price-orig">${p.price} ₪</span>` : ''}
+        </div>
+      </div>
+      <div class="pcard-footer">
+        ${p.isActive ? `
+        <div class="qty-add">
+          <button class="qty-btn" onclick="adjustCard('${esc(p.name)}',-1)"><i class="fas fa-minus"></i></button>
+          <span class="qty-val">${inCart}</span>
+          <button class="add-btn" onclick="adjustCard('${esc(p.name)}',1)"><i class="fas fa-plus"></i>${inCart > 0 ? 'הוסף עוד' : 'הוסף לסל'}</button>
+        </div>` : `<div class="out-label"><i class="fas fa-times-circle" style="margin-left:4px"></i>לא זמין</div>`}
+      </div>
+    </div>`;
+  }).join('');
+}
+function esc(s) { return String(s||'').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
+
+/* ══════════════════════════════════════════════════
+   CART LOGIC — unchanged from original
+══════════════════════════════════════════════════ */
+function getCart() { try { return JSON.parse(localStorage.getItem('ginoCart') || '[]'); } catch { return []; } }
+function saveCart(cart) {
+  localStorage.setItem('ginoCart', JSON.stringify(cart));
+  updateBadge();
+  if (document.getElementById('cartDrawer').classList.contains('open')) renderCartDrawer();
+  renderProducts();
+}
+function adjustCard(name, delta) {
+  const prods = (typeof getProducts==='function') ? getProducts() : [];
+  const product = prods.find(p => p.name === name);
+  if (!product) return;
+  const cart = getCart();
+  const idx = cart.findIndex(i => i.name === name);
+  if (idx === -1 && delta > 0) {
+    cart.push({ name: product.name, price: getEffectivePrice(product), qty: 1, category: product.category });
+    showToast(`<strong>${product.name}</strong> נוסף לעגלה`);
+  } else if (idx !== -1) {
+    cart[idx].qty += delta;
+    if (cart[idx].qty <= 0) cart.splice(idx, 1);
+    if (delta > 0) showToast(`<strong>${product.name}</strong> עודכן בעגלה`);
+  }
+  saveCart(cart);
+}
+function removeFromCart(name) { saveCart(getCart().filter(i => i.name !== name)); }
+function clearCart() { saveCart([]); showToast('העגלה רוקנה'); }
+function getCartTotal() { return getCart().reduce((s,i) => s + (parseFloat(i.price)||0) * (parseInt(i.qty)||1), 0); }
+function updateBadge() {
+  document.getElementById('cartBadge').textContent = getCart().reduce((s,i) => s + (parseInt(i.qty)||1), 0);
+}
+
+function openCart() {
+  document.getElementById('cartDrawer').classList.add('open');
+  document.getElementById('cartOverlay').classList.add('open');
+  document.body.style.overflow = 'hidden';
+  renderCartDrawer();
+}
+function closeCart() {
+  document.getElementById('cartDrawer').classList.remove('open');
+  document.getElementById('cartOverlay').classList.remove('open');
+  document.body.style.overflow = '';
+}
+
+function renderCartDrawer() {
+  const cart = getCart();
+  const body = document.getElementById('cartBody');
+  const footer = document.getElementById('cartFooter');
+  if (!cart.length) {
+    body.innerHTML = `<div class="cart-empty"><i class="fas fa-shopping-cart"></i><p>העגלה שלך ריקה</p><button onclick="closeCart()" style="background:var(--gold);color:#000;border:none;padding:10px 28px;border-radius:50px;font-weight:700;cursor:pointer;">המשך קנייה</button></div>`;
+    footer.style.display = 'none';
+    return;
+  }
+  footer.style.display = 'block';
+  const prods = (typeof getProducts==='function') ? getProducts() : [];
+  body.innerHTML = cart.map(item => {
+    const p = prods.find(x => x.name === item.name);
+    const imgUrl = p ? getCatImage(p.category, p.name) : '';
+    return `<div class="cart-item">
+      <div class="ci-img">${imgUrl ? `<img src="${imgUrl}" alt="${esc(item.name)}" onerror="this.parentElement.innerHTML='<i class=\\'fas fa-wine-bottle\\'></i>'">` : '<i class="fas fa-wine-bottle"></i>'}</div>
+      <div class="ci-info">
+        <div class="ci-name">${esc(item.name)}</div>
+        <div class="ci-cat">${esc(item.category||'')}</div>
+        <div class="ci-price">${((parseFloat(item.price)||0) * (parseInt(item.qty)||1)).toFixed(0)} ₪</div>
+      </div>
+      <div class="ci-controls">
+        <button class="ci-btn" onclick="adjustCard('${esc(item.name)}',-1)"><i class="fas fa-minus"></i></button>
+        <span class="ci-qty">${item.qty}</span>
+        <button class="ci-btn" onclick="adjustCard('${esc(item.name)}',1)"><i class="fas fa-plus"></i></button>
+        <button class="ci-del" onclick="removeFromCart('${esc(item.name)}')"><i class="fas fa-trash"></i></button>
+      </div>
+    </div>`;
+  }).join('');
+  setDelivery(delivery);
+}
+
+function renderTotals() {
+  const sub = getCartTotal();
+  const delivCost = delivery === 'delivery' ? 30 : 0;
+  const disc = Math.round(sub * discount / 100);
+  const total = sub - disc + delivCost;
+  document.getElementById('cartTotals').innerHTML = `
+    <div class="total-row"><span>סכום ביניים</span><span>${sub.toFixed(0)} ₪</span></div>
+    ${disc > 0 ? `<div class="total-row discount"><span>הנחת קופון (${discount}%)</span><span>-${disc} ₪</span></div>` : ''}
+    <div class="total-row"><span>משלוח</span><span>${delivCost > 0 ? delivCost + ' ₪' : 'חינם'}</span></div>
+    <div class="total-row grand"><span>סה"כ לתשלום</span><span>${total.toFixed(0)} ₪</span></div>`;
+}
+
+function setDelivery(type) {
+  delivery = type;
+  document.getElementById('optPickup').classList.toggle('active', type === 'pickup');
+  document.getElementById('optDelivery').classList.toggle('active', type === 'delivery');
+  const pickupDetails = document.getElementById('pickupDetails');
+  if (pickupDetails) pickupDetails.style.display = type === 'pickup' ? 'block' : 'none';
+  renderTotals();
+}
+
+function applyCoupon() {
+  const code = document.getElementById('couponInput').value.trim().toUpperCase();
+  const msg = document.getElementById('couponMsg');
+  if (!code) { msg.textContent = ''; return; }
+  const disc = (typeof validateCoupon === 'function') ? validateCoupon(code) : 0;
+  if (disc > 0) { discount = disc; msg.className = 'coupon-msg ok'; msg.textContent = `✓ קופון הופעל — ${disc}% הנחה!`; }
+  else { discount = 0; msg.className = 'coupon-msg err'; msg.textContent = '✕ קוד קופון לא תקין'; }
+  renderTotals();
+}
+
+function goCheckout() {
+  localStorage.setItem('ginoDelivery', delivery);
+  localStorage.setItem('ginoDiscount', discount);
+  if (delivery === 'pickup') {
+    const branch = document.getElementById('pickupBranch');
+    const date = document.getElementById('pickupDate');
+    if (branch) localStorage.setItem('ginoPickupBranch', branch.value);
+    if (date) localStorage.setItem('ginoPickupDate', date.value);
+  } else {
+    localStorage.removeItem('ginoPickupBranch');
+    localStorage.removeItem('ginoPickupDate');
+  }
+}
+
+/* ══════════════════════════════════════════════════
+   WISHLIST, FILTERS & TOAST — unchanged from original
+══════════════════════════════════════════════════ */
+function toggleWish(name) {
+  const idx = wishlist.indexOf(name);
+  if (idx === -1) { wishlist.push(name); showToast(`<i class="fas fa-heart" style="color:#e74c3c"></i> נוסף לרשימת המשאלות`); }
+  else { wishlist.splice(idx,1); showToast('הוסר מרשימת המשאלות'); }
+  localStorage.setItem('ginoWishlist', JSON.stringify(wishlist));
+  renderProducts();
+}
+
+function updatePriceFilter() {
+  priceMin = +document.getElementById('priceMin').value;
+  priceMax = +document.getElementById('priceMax').value;
+  if (priceMin > priceMax) { priceMin = priceMax; document.getElementById('priceMin').value = priceMin; }
+  document.getElementById('priceMinVal').textContent = priceMin;
+  document.getElementById('priceMaxVal').textContent = priceMax;
+  renderProducts();
+}
+function setAlcFilter(btn, val) {
+  alcFilter = val;
+  document.querySelectorAll('.alc-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  renderProducts();
+}
+function resetFilters() {
+  priceMin = 0; priceMax = 2000; alcFilter = 'all';
+  document.getElementById('priceMin').value = 0;
+  document.getElementById('priceMax').value = 2000;
+  document.getElementById('priceMinVal').textContent = 0;
+  document.getElementById('priceMaxVal').textContent = 2000;
+  document.querySelectorAll('.alc-btn').forEach(b => b.classList.remove('active'));
+  document.querySelector('.alc-btn[data-alc="all"]').classList.add('active');
+  document.getElementById('onlyActive').checked = false;
+  document.getElementById('onlySale').checked = false;
+  renderProducts();
+}
+
+let toastTimer;
+function showToast(html) {
+  const t = document.getElementById('toast');
+  document.getElementById('toastText').innerHTML = html;
+  t.classList.add('show');
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => t.classList.remove('show'), 2800);
+}
+
+/* ══════════════════════════════════════════════════
+   AGE GATE — unchanged from original
+══════════════════════════════════════════════════ */
+(function() {
+  const gate = document.getElementById('ageGate');
+  if (!sessionStorage.getItem('ageOK')) gate.classList.remove('gone'); else gate.classList.add('gone');
+  document.getElementById('ageYes').onclick = () => {
+    sessionStorage.setItem('ageOK','1'); localStorage.setItem('ageVerified','1');
+    gate.style.animation = 'none'; gate.style.opacity = '0';
+    gate.style.transform = 'scale(0.97)'; gate.style.transition = 'all 0.4s ease';
+    setTimeout(() => gate.classList.add('gone'), 380);
+  };
+  document.getElementById('ageNo').onclick = () => window.location.href = 'https://www.google.com';
+})();
+
+/* ══════════════════════════════════════════════════
+   EVENT LISTENERS — unchanged from original
+══════════════════════════════════════════════════ */
+document.getElementById('cartTrigger').addEventListener('click', openCart);
+document.getElementById('hamburger').addEventListener('click', () => document.getElementById('mobNav').classList.toggle('open'));
+document.getElementById('searchInput').addEventListener('input', e => { searchQ = e.target.value; renderProducts(); });
+document.getElementById('sortSelect').addEventListener('change', e => { sortMode = e.target.value; renderProducts(); });
+document.getElementById('filterToggle').addEventListener('click', function() {
+  document.getElementById('filterPanel').classList.toggle('open'); this.classList.toggle('active');
+});
+
+/* ══════════════════════════════════════════════════
+   INIT — unchanged from original
+══════════════════════════════════════════════════ */
+function init() { renderCatBar(); renderProducts(); updateBadge(); }
+if (typeof syncProductsFromCloud === 'function') { window.addEventListener('load', () => setTimeout(init, 800)); }
+else init();
+
+/* ── EXTREME PREMIUM UPGRADES LOGIC (SHOP) ── */
+
+// העלמת העכבר הרגיל
+document.body.style.cursor = 'none';
+
+// 1. יצירת סמן העכבר
+const cursor = document.createElement('div');
+cursor.className = 'premium-cursor';
+document.body.appendChild(cursor);
+
+document.addEventListener('mousemove', e => {
+  cursor.style.left = e.clientX + 'px';
+  cursor.style.top = e.clientY + 'px';
+});
+
+// זיהוי חכם: כשהעכבר מרחף מעל מוצר דינמי, כפתור, או קישור בחנות
+document.addEventListener('mouseover', e => {
+  if (e.target.closest('a, button, .pcard, .cat-pill, .del-opt, .qty-btn, .ci-btn, select, input')) {
+    cursor.classList.add('hovered');
+    if(e.target.closest('a, button, select, input')) e.target.closest('a, button, select, input').style.cursor = 'none';
+  }
+});
+
+document.addEventListener('mouseout', e => {
+  if (e.target.closest('a, button, .pcard, .cat-pill, .del-opt, .qty-btn, .ci-btn, select, input')) {
+    cursor.classList.remove('hovered');
+  }
+});
+
+// 2. הפעלת מסך פתיחה קולנועי
+window.addEventListener('load', () => {
+  // ממתין לאנימציית הזהב, ואז חושף את החנות
+  setTimeout(() => {
+    document.body.classList.add('loaded');
+  }, 2200); 
+});
+</script>
+</body>
+</html>
