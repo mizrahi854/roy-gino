@@ -159,7 +159,6 @@ if (window.matchMedia('(pointer: fine)').matches) {
     el.addEventListener('mouseleave', () => cursor.classList.remove('hovered'));
   });
 
-  document.body.style.cursor = 'none';
   document.querySelectorAll('a, button').forEach(el => {
     el.style.cursor = 'none';
   });
