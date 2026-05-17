@@ -897,6 +897,12 @@ body {
   -webkit-backdrop-filter: blur(15px);
   border-bottom: 1px solid rgba(201, 168, 76, 0.15);
   box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+
+  position: fixed !important;   /* מקבע את התפריט למסך שלא יזוז בגלילה */
+  top: 0 !important;            /* מצמיד אותו לקצה העליון של המסך */
+  left: 0;                      /* מצמיד אותו לצד שמאל */
+  width: 100%;                  /* פורס אותו לכל רוחב המסך */
+  z-index: 9999 !important;
 }
 
 /* 5. שדרוג מטורף לכפתורים - Sweep & Glow Effect */
